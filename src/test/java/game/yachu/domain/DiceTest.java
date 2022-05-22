@@ -20,4 +20,13 @@ class DiceTest {
                 .isInstanceOf(IllegalArgumentException.class);
 
     }
+
+    @Test
+    void 주사위를_굴린다() {
+        Dice dice = new Dice(1);
+        for (int i = 0; i < 10; i++) {
+            dice.roll();
+            System.out.println(dice.getValue());
+        }
+    }
 }

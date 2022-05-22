@@ -1,5 +1,8 @@
 package game.yachu.domain;
 
+import lombok.Getter;
+
+@Getter
 public class Dice {
     private int value;
 
@@ -10,4 +13,7 @@ public class Dice {
         this.value = value;
     }
 
+    public void roll() {
+        this.value = RandomUtil.randomValue();
+    }
 }
