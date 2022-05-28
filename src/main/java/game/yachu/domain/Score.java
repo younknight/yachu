@@ -1,7 +1,10 @@
 package game.yachu.domain;
 
 import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter @Setter
 public class Score {
     private int aces; // 1기 방패
     private int deuces; // 2기 방패
