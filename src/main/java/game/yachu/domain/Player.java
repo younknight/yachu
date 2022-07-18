@@ -15,13 +15,18 @@ public class Player {
         }
     }
 
-    public void rollDices() {
+    public List<Dice> rollDices() {
         for (Dice dice : dices) {
             if (dice.isFixed()) {
                 continue;
             }
             dice.roll();
         }
+        return dices;
+    }
+
+    public Dice getDice(int index) {
+        return dices.get(index);
     }
 
     public void setScore(Rank rank, Genealogy select) {

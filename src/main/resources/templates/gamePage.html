@@ -1,14 +1,54 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
 <body>
-    <p th:text="${id}"></p>
-
+<button id="dice1"></button>
+<button id="dice2"></button>
+<button id="dice3"></button>
+<button id="dice4"></button>
+<button id="dice5"></button>
+<button id="rollDicesBtn">re-roll</button>
 <script>
+    const id = parseId();
+    for (let i = 0; i < 5; i++) {
+        document.getElementById("dice" + (i + 1)).addEventListener("click", () => toggleFixed(i));
+    }
+    document.getElementById("rollDicesBtn").addEventListener("click", () => rollDices());
 
+    let chance = 0;
+    rollDices();
+
+    function parseId() {
+        let array = window.location.pathname.split("/");
+        return array[array.length - 1];
+    }
+
+    function toggleFixed(index) {
+        fetch("/api/" + id + "/toggle/" + index, {
+            method: "POST",
+        });
+    }
+
+    function rollDices() {
+        if (chance >= 3) {
+            alert("다 돌림");
+            return;
+        }
+
+        fetch("/api/" + id + "/roll", {
+            method: "POST",
+        })
+            .then((response) => response.json())
+            .then((json) => {
+                for (let index = 0; index < 5; index++) {
+                    document.getElementById("dice" + (index + 1)).innerHTML = json.dices[index].value;
+                }
+            });
+        chance++;
+    }
 </script>
 </body>
 </html>
