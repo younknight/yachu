@@ -1,15 +1,12 @@
 package game.yachu.controller;
 
+import game.yachu.controller.request.GainRequest;
 import game.yachu.controller.response.DiceResponse;
-import game.yachu.domain.Dice;
-import game.yachu.domain.Player;
+import game.yachu.domain.*;
 import game.yachu.repository.GameStateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -40,7 +37,10 @@ public class GameController {
     public DiceResponse roll(@PathVariable Long id) {
         Player player = repository.get(id);
         List<Dice> dices = player.rollDices();
-        return new DiceResponse(dices);
+        Rank rank = new Rank(dices);
+        Score calculated = rank.calculate();
+        calculated.hasGained(player.getScore());
+        return new DiceResponse(dices, calculated);
     }
 
     @ResponseBody
@@ -52,5 +52,12 @@ public class GameController {
 //        System.out.println("[toggle] current fixed state: " + dice.isFixed());
         dice.changeFixedState();
 //        System.out.println("[toggle] change fixed state: " + dice.isFixed());
+    }
+
+    @ResponseBody
+    @PostMapping("/api/{id}/gain")
+    public void gain(@PathVariable("id") Long id, @RequestBody GainRequest request) {
+        Player player = repository.get(id);
+        player.setScore(Genealogy.valueOf(request.getCategory()), request.getGained());
     }
 }

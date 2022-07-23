@@ -1,8 +1,11 @@
 package game.yachu.domain;
 
+import lombok.Getter;
+
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
 public class Player {
     private List<Dice> dices;
     private Score score;
@@ -13,6 +16,7 @@ public class Player {
         for (int i = 0; i < 5; i++) {
             dices.add(new Dice(initialValue));
         }
+        score = new Score();
     }
 
     public List<Dice> rollDices() {
@@ -29,45 +33,43 @@ public class Player {
         return dices.get(index);
     }
 
-    public void setScore(Rank rank, Genealogy select) {
-        Score genealogy = rank.calculate();
-
+    public void setScore(Genealogy select, int gained) {
         switch (select) {
             case ACES:
-                score.setAces(genealogy.getAces());
+                score.setAces(gained);
                 break;
             case DEUCES:
-                score.setDeuces(genealogy.getDeuces());
+                score.setDeuces(gained);
                 break;
             case THREES:
-                score.setThrees(genealogy.getThrees());
+                score.setThrees(gained);
                 break;
             case FOURS:
-                score.setFours(genealogy.getFours());
+                score.setFours(gained);
                 break;
             case FIVES:
-                score.setFives(genealogy.getFives());
+                score.setFives(gained);
                 break;
             case SIXES:
-                score.setSixes(genealogy.getSixes());
+                score.setSixes(gained);
                 break;
             case CHOICE:
-                score.setChoice(genealogy.getChoice());
+                score.setChoice(gained);
                 break;
             case FOUR_OF_KIND:
-                score.setFourOfKind(genealogy.getFourOfKind());
+                score.setFourOfKind(gained);
                 break;
             case FULL_HOUSE:
-                score.setFullHouse(genealogy.getFullHouse());
+                score.setFullHouse(gained);
                 break;
             case SMALL_STRAIGHT:
-                score.setSmallStraight(genealogy.getSmallStraight());
+                score.setSmallStraight(gained);
                 break;
             case LARGE_STRAIGHT:
-                score.setLargeStraight(genealogy.getLargeStraight());
+                score.setLargeStraight(gained);
                 break;
             case YACHU:
-                score.setYachu(genealogy.getYachu());
+                score.setYachu(gained);
                 break;
         }
     }
