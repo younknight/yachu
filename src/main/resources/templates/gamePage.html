@@ -1,54 +1,111 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+
+    <link rel="stylesheet" href="" th:href="@{/css/gamePage.css}"/>
 </head>
 <body>
-<button id="dice1"></button>
-<button id="dice2"></button>
-<button id="dice3"></button>
-<button id="dice4"></button>
-<button id="dice5"></button>
-<button id="rollDicesBtn">re-roll</button>
-<script>
-    const id = parseId();
-    for (let i = 0; i < 5; i++) {
-        document.getElementById("dice" + (i + 1)).addEventListener("click", () => toggleFixed(i));
-    }
-    document.getElementById("rollDicesBtn").addEventListener("click", () => rollDices());
+<aside id="scoreBoard">
+    <h2>Score Board</h2>
 
-    let chance = 0;
-    rollDices();
+    <table>
+        <tr>
+            <th>Categories</th>
+            <th>Score</th>
+        </tr>
+        <tr>
+            <td>ACES</td>
+            <td class="category" id="ACES"></td>
+        </tr>
+        <tr>
+            <td>DEUCES</td>
+            <td class="category" id="DEUCES"></td>
+        </tr>
+        <tr>
+            <td>THREES</td>
+            <td class="category" id="THREES"></td>
+        </tr>
+        <tr>
+            <td>FOURS</td>
+            <td class="category" id="FOURS"></td>
+        </tr>
+        <tr>
+            <td>FIVES</td>
+            <td class="category" id="FIVES"></td>
+        </tr>
+        <tr>
+            <td>SIXES</td>
+            <td class="category" id="SIXES"></td>
+        </tr>
+        <tr>
+            <td>SubTotal</td>
+            <td class="category" id="SubTotal"></td>
+        </tr>
+        <tr>
+            <td>BonusScore</td>
+            <td class="category" id="BonusScore"></td>
+        </tr>
+        <tr>
+            <td>CHOICE</td>
+            <td class="category" id="CHOICE"></td>
+        </tr>
+        <tr>
+            <td>FOUR_OF_KIND</td>
+            <td class="category" id="FOUR_OF_KIND"></td>
+        </tr>
+        <tr>
+            <td>FULL_HOUSE</td>
+            <td class="category" id="FULL_HOUSE"></td>
+        </tr>
+        <tr>
+            <td>SMALL_STRAIGHT</td>
+            <td class="category" id="SMALL_STRAIGHT"></td>
+        </tr>
+        <tr>
+            <td>LARGE_STRAIGHT</td>
+            <td class="category" id="LARGE_STRAIGHT"></td>
+        </tr>
+        <tr>
+            <td>YACHU</td>
+            <td class="category" id="YACHU"></td>
+        </tr>
+        <tr>
+            <td>Total</td>
+            <td class="category" id="Total"></td>
+        </tr>
 
-    function parseId() {
-        let array = window.location.pathname.split("/");
-        return array[array.length - 1];
-    }
+    </table>
 
-    function toggleFixed(index) {
-        fetch("/api/" + id + "/toggle/" + index, {
-            method: "POST",
-        });
-    }
-
-    function rollDices() {
-        if (chance >= 3) {
-            alert("다 돌림");
-            return;
-        }
-
-        fetch("/api/" + id + "/roll", {
-            method: "POST",
-        })
-            .then((response) => response.json())
-            .then((json) => {
-                for (let index = 0; index < 5; index++) {
-                    document.getElementById("dice" + (index + 1)).innerHTML = json.dices[index].value;
-                }
-            });
-        chance++;
-    }
-</script>
+</aside>
+<main>
+    <section id="diceBtnContainer">
+        <button class="diceBtn" id="diceBtn1">
+            <img src="/images/diceImg0.png" id="diceImg1" alt="diceImg"/>
+            <div class="fixedCheckDiv" id="fixedCheckDiv1"></div>
+        </button>
+        <button class="diceBtn" id="diceBtn2">
+            <img src="/images/diceImg0.png" id="diceImg2" alt="diceImg"/>
+            <div class="fixedCheckDiv" id="fixedCheckDiv2"></div>
+        </button>
+        <button class="diceBtn" id="diceBtn3">
+            <img src="/images/diceImg0.png" id="diceImg3" alt="diceImg"/>
+            <div class="fixedCheckDiv" id="fixedCheckDiv3"></div>
+        </button>
+        <button class="diceBtn" id="diceBtn4">
+            <img src="/images/diceImg0.png" id="diceImg4" alt="diceImg"/>
+            <div class="fixedCheckDiv" id="fixedCheckDiv4"></div>
+        </button>
+        <button class="diceBtn" id="diceBtn5">
+            <img src="/images/diceImg0.png" id="diceImg5" alt="diceImg"/>
+            <div class="fixedCheckDiv" id="fixedCheckDiv5"></div>
+        </button>
+    </section>
+    <button id="rollDicesBtn">
+        굴리기
+    </button>
+</main>
+<script src="" th:src="@{/js/gamePage.js}"></script>
 </body>
 </html>
