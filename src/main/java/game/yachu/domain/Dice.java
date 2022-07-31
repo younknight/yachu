@@ -5,7 +5,6 @@ import lombok.Getter;
 @Getter
 public class Dice {
     private int value;
-    private boolean isFixed;
 
     public Dice(int value) {
         if (isOutOfRange(value)) {
@@ -18,11 +17,11 @@ public class Dice {
         this.value = RandomUtil.randomBetweenOneAndSix();
     }
 
-    public void changeFixedState() {
-        this.isFixed = !this.isFixed;
+    public void resetValue() {
+        value = 0;
     }
 
     private boolean isOutOfRange(int value) {
-        return value <= 0 || value > 6;
+        return value < 0 || value > 6;
     }
 }

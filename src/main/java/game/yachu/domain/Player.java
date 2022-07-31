@@ -9,28 +9,31 @@ import java.util.List;
 public class Player {
     private List<Dice> dices;
     private Score score;
+    private int chance;
 
     public Player() {
-        final int initialValue = 1;
+        final int initialValue = 0;
         dices = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
             dices.add(new Dice(initialValue));
         }
         score = new Score();
+        chance = 0;
     }
 
-    public List<Dice> rollDices() {
-        for (Dice dice : dices) {
-            if (dice.isFixed()) {
+    public List<Dice> rollDices(List<Boolean> fixStates) {
+        if (chance >= 3) {
+            return dices;
+        }
+
+        for (int i = 0; i < fixStates.size(); i++) {
+            if (fixStates.get(i)) {
                 continue;
             }
-            dice.roll();
+            dices.get(i).roll();
         }
+        chance++;
         return dices;
-    }
-
-    public Dice getDice(int index) {
-        return dices.get(index);
     }
 
     public void setScore(Genealogy select, int gained) {
@@ -72,5 +75,11 @@ public class Player {
                 score.setYachu(gained);
                 break;
         }
+    }
+
+    public void resetState() {
+        chance = 0;
+        dices.stream()
+                .forEach(Dice::resetValue);
     }
 }

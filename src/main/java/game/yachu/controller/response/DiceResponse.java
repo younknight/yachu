@@ -12,9 +12,11 @@ import java.util.List;
 public class DiceResponse {
     private List<Dice> dices;
     private Score score;
+    private int chance;
 
-    public DiceResponse(List<Dice> dices, Score score) {
+    public DiceResponse(List<Dice> dices, Score score, int chance) {
         this.dices = dices;
         this.score = score;
+        this.chance = chance;
     }
 }

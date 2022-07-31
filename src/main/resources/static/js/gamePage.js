@@ -1,4 +1,6 @@
 const id = parseId();
+const HOMEWORK_SCORE = 63;
+const BONUS_SCORE = 35;
 
 let rollDicesBtn = document.getElementById("rollDicesBtn");
 rollDicesBtn.onclick = function () {
@@ -10,18 +12,127 @@ for (let i = 0; i < categories.length; i++) {
     categories[i].onclick = () => gain(i);
 }
 
+for (let i = 0; i < 5; i++) {
+    document.getElementById("fixedCheckDiv" + (i + 1)).style.display = "none"
+    document.getElementById("diceBtn" + (i + 1)).onclick = () => toggleFixed(i);
+}
+
+load();
+let chance = 0;
+
+function load() {
+    fetch("/api/" + id + "/load", {
+        method: "POST"
+    })
+        .then((response) => response.json())
+        .then((json) => {
+            chance = json.chance;
+            for (let index = 0; index < 5; index++) {
+                const value = json.dices[index];
+                let diceImg = document.getElementById("diceImg" + (index + 1));
+                diceImg.src = "/images/diceImg" + value + ".png";
+            }
+            console.log(json.playerScore);
+            fillScoreBoard(json.playerScore, "black");
+            let subTotal = 0;
+            let total = 0;
+            for (let i = 0; i < 6; i++) {
+                subTotal += Number(categories[i].innerHTML);
+            }
+            total += subTotal;
+            categories[6].innerHTML = subTotal;
+            if (subTotal >= HOMEWORK_SCORE) {
+                total += BONUS_SCORE;
+                categories[7].innerHTML = BONUS_SCORE;
+            }
+            for (let i = 8; i < 14; i++) {
+                total += Number(categories[i].innerHTML);
+            }
+            categories[14].innerHTML = total;
+            fillScoreBoard(json.diceScore, "gray");
+        })
+}
+
+function parseId() {
+    let array = location.pathname.split("/");
+    return array[array.length - 1];
+}
+
+let fixStates = [false, false, false, false, false];
+
+function toggleFixed(index) {
+    if (chance == 0) {
+        return;
+    }
+    let fixedCheckDiv = document.getElementById("fixedCheckDiv" + (index + 1));
+    if (fixedCheckDiv.style.display == "none") {
+        fixedCheckDiv.style.display = "block";
+    } else {
+        fixedCheckDiv.style.display = "none";
+    }
+
+    fixStates[index] = !fixStates[index];
+}
+
+function setScore(score, category, color) {
+    if (score < 0) return;
+    let element = document.getElementById(category);
+    element.innerHTML = score;
+    element.style.color = color;
+}
+
+function fillScoreBoard(score, color) {
+    setScore(score.aces, "ACES", color);
+    setScore(score.deuces, "DEUCES", color);
+    setScore(score.threes, "THREES", color);
+    setScore(score.fours, "FOURS", color);
+    setScore(score.fives, "FIVES", color);
+    setScore(score.sixes, "SIXES", color);
+    setScore(score.choice, "CHOICE", color);
+    setScore(score.fourOfKind, "FOUR_OF_KIND", color);
+    setScore(score.fullHouse, "FULL_HOUSE", color);
+    setScore(score.smallStraight, "SMALL_STRAIGHT", color);
+    setScore(score.largeStraight, "LARGE_STRAIGHT", color);
+    setScore(score.yachu, "YACHU", color);
+}
+
+function rollDices() {
+    if (chance >= 3) {
+        alert("다 돌림");
+        return;
+    }
+
+    fetch("/api/" + id + "/roll", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            "fixStates": fixStates,
+        }),
+    })
+        .then((response) => response.json())
+        .then((json) => {
+            chance = json.chance;
+            for (let index = 0; index < 5; index++) {
+                let diceImg = document.getElementById("diceImg" + (index + 1));
+                diceImg.src = "/images/diceImg" + json.dices[index].value + ".png";
+            }
+
+            fillScoreBoard(json.score, "gray");
+        });
+
+}
+
 function gain(index) {
     if (chance == 0) {
-        alert("주사위를 굴리십시오")
+        alert("주사위를 굴리십시오");
         return;
     }
 
     let element = categories[index];
     const category = element.id;
     const score = element.innerHTML;
-
-    const HOMEWORK_SCORE = 63;
-    const BONUS_SCORE = 35;
 
     fetch("/api/" + id + "/gain", {
         method: "POST",
@@ -30,10 +141,10 @@ function gain(index) {
         },
         body: JSON.stringify({
             "category": category,
-            "score": parseInt(score),
+            "gained": Number(score),
         }),
     }).then(() => {
-        element.style.color = "black"
+        element.style.color = "black";
         chance = 0;
         for (let index = 0; index < 5; index++) {
             let diceImg = document.getElementById("diceImg" + (index + 1));
@@ -59,6 +170,12 @@ function gain(index) {
             categories[7].innerHTML = BONUS_SCORE;
             total.innerHTML = Number(total.innerHTML) + BONUS_SCORE;
         }
+
+        fixStates = [false, false, false, false, false];
+
+        for (let i = 0; i < 5; i++) {
+            document.getElementById("fixedCheckDiv" + (i + 1)).style.display = "none";
+        }
     })
 
     function isHomework(index) {
@@ -66,124 +183,10 @@ function gain(index) {
     }
 
     function hasBonusScore() {
-        return categories[7].innerHTML == BONUS_SCORE ;
+        return categories[7].innerHTML == BONUS_SCORE;
     }
 
     function isSatisfiedHomework(subTotal) {
         return subTotal.innerHTML >= HOMEWORK_SCORE;
-    }
-}
-
-for (let i = 0; i < 5; i++) {
-    document.getElementById("fixedCheckDiv" + (i + 1)).style.display = "none"
-    document.getElementById("diceBtn" + (i + 1)).onclick = () => toggleFixed(i);
-}
-
-let chance = 0;
-
-function parseId() {
-    let array = window.location.pathname.split("/");
-    return array[array.length - 1];
-}
-
-function toggleFixed(index) {
-    if(chance == 0) {
-        return;
-    }
-    let fixedCheckDiv = document.getElementById("fixedCheckDiv" + (index + 1));
-    if (fixedCheckDiv.style.display == "none") {
-        fixedCheckDiv.style.display = "block";
-    } else {
-        fixedCheckDiv.style.display = "none";
-    }
-    fetch("/api/" + id + "/toggle/" + index, {
-        method: "POST",
-    });
-}
-
-function rollDices() {
-    if (chance >= 300) {
-        alert("다 돌림");
-        return;
-    }
-
-    fetch("/api/" + id + "/roll", {
-        method: "POST",
-    })
-        .then((response) => response.json())
-        .then((json) => {
-            for (let index = 0; index < 5; index++) {
-                let diceImg = document.getElementById("diceImg" + (index + 1));
-                diceImg.src = "/images/diceImg" + json.dices[index].value + ".png";
-            }
-
-            if (json.score.aces >= 0) {
-                let element = document.getElementById("ACES");
-                element.innerHTML = json.score.aces;
-                element.style.color = "gray";
-            }
-            if (json.score.deuces >= 0) {
-                let element = document.getElementById("DEUCES");
-                element.innerHTML = json.score.deuces;
-                element.style.color = "gray";
-            }
-            if (json.score.threes >= 0) {
-                let element = document.getElementById("THREES");
-                element.innerHTML = json.score.threes;
-                element.style.color = "gray";
-            }
-            if (json.score.fours >= 0) {
-                let element = document.getElementById("FOURS");
-                element.innerHTML = json.score.fours;
-                element.style.color = "gray";
-            }
-            if (json.score.fives >= 0) {
-                let element = document.getElementById("FIVES");
-                element.innerHTML = json.score.fives;
-                element.style.color = "gray";
-            }
-            if (json.score.sixes >= 0) {
-                let element = document.getElementById("SIXES");
-                element.innerHTML = json.score.sixes;
-                element.style.color = "gray";
-            }
-            if (json.score.choice >= 0) {
-                let element = document.getElementById("CHOICE");
-                element.innerHTML = json.score.choice;
-                element.style.color = "gray";
-            }
-            if (json.score.fourOfKind >= 0) {
-                let element = document.getElementById("FOUR_OF_KIND");
-                element.innerHTML = json.score.fourOfKind;
-                element.style.color = "gray";
-            }
-            if (json.score.fullHouse >= 0) {
-                let element = document.getElementById("FULL_HOUSE");
-                element.innerHTML = json.score.fullHouse;
-                element.style.color = "gray";
-            }
-            if (json.score.smallStraight >= 0) {
-                let element = document.getElementById("SMALL_STRAIGHT");
-                element.innerHTML = json.score.smallStraight;
-                element.style.color = "gray";
-            }
-            if (json.score.largeStraight >= 0) {
-                let element = document.getElementById("LARGE_STRAIGHT")
-                element.innerHTML = json.score.largeStraight;
-                element.style.color = "gray";
-            }
-            if (json.score.yachu >= 0) {
-                let element = document.getElementById("YACHU")
-                element.innerHTML = json.score.yachu;
-                element.style.color = "gray";
-            }
-        });
-    chance++;
-
-    function preScore(score, category) {
-        if (score < 0) return;
-        let element = document.getElementById(category);
-        element.innerHTML = score;
-        element.style.color = "gray";
     }
 }
