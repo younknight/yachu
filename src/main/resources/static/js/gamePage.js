@@ -20,6 +20,9 @@ function gain(index) {
     const category = element.id;
     const score = element.innerHTML;
 
+    const HOMEWORK_SCORE = 63;
+    const BONUS_SCORE = 35;
+
     fetch("/api/" + id + "/gain", {
         method: "POST",
         headers: {
@@ -45,18 +48,30 @@ function gain(index) {
         let total = categories[categories.length - 1];
         total.innerHTML = Number(total.innerHTML) + Number(score);
 
-        if (index >= 0 && index <= 5) {
-            let subTotal = categories[6];
-            subTotal.innerHTML = Number(subTotal.innerHTML) + Number(score);
+        if (!isHomework(index)) {
+            return;
+        }
 
-            if (categories[7].innerHTML != 35) {
-                if (subTotal.innerHTML >= 63) {
-                    categories[7].innerHTML = "35";
-                    total.innerHTML = Number(total.innerHTML) + 35;
-                }
-            }
+        let subTotal = categories[6];
+        subTotal.innerHTML = Number(subTotal.innerHTML) + Number(score);
+
+        if (!hasBonusScore() && isSatisfiedHomework(subTotal)) {
+            categories[7].innerHTML = BONUS_SCORE;
+            total.innerHTML = Number(total.innerHTML) + BONUS_SCORE;
         }
     })
+
+    function isHomework(index) {
+        return index >= 0 && index <= 5;
+    }
+
+    function hasBonusScore() {
+        return categories[7].innerHTML == BONUS_SCORE ;
+    }
+
+    function isSatisfiedHomework(subTotal) {
+        return subTotal.innerHTML >= HOMEWORK_SCORE;
+    }
 }
 
 for (let i = 0; i < 5; i++) {
@@ -164,4 +179,11 @@ function rollDices() {
             }
         });
     chance++;
+
+    function preScore(score, category) {
+        if (score < 0) return;
+        let element = document.getElementById(category);
+        element.innerHTML = score;
+        element.style.color = "gray";
+    }
 }
