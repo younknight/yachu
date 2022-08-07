@@ -9,6 +9,9 @@ rollDicesBtn.onclick = function () {
 
 let categories = document.getElementsByClassName("category");
 for (let i = 0; i < categories.length; i++) {
+    if(i == 6 || i == 7 || i == 14) {
+        continue;
+    }
     categories[i].onclick = () => gain(i);
 }
 
@@ -134,6 +137,8 @@ function gain(index) {
     const category = element.id;
     const score = element.innerHTML;
 
+    categories[index].onclick = null;
+
     fetch("/api/" + id + "/gain", {
         method: "POST",
         headers: {
@@ -146,6 +151,10 @@ function gain(index) {
     }).then(() => {
         element.style.color = "black";
         chance = 0;
+        fixStates = [false, false, false, false, false];
+        for (let i = 0; i < 5; i++) {
+            document.getElementById("fixedCheckDiv" + (i + 1)).style.display = "none";
+        }
         for (let index = 0; index < 5; index++) {
             let diceImg = document.getElementById("diceImg" + (index + 1));
             diceImg.src = "/images/diceImg0.png";
@@ -171,11 +180,6 @@ function gain(index) {
             total.innerHTML = Number(total.innerHTML) + BONUS_SCORE;
         }
 
-        fixStates = [false, false, false, false, false];
-
-        for (let i = 0; i < 5; i++) {
-            document.getElementById("fixedCheckDiv" + (i + 1)).style.display = "none";
-        }
     })
 
     function isHomework(index) {
