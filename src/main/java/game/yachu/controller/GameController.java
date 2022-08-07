@@ -1,11 +1,14 @@
 package game.yachu.controller;
 
 import game.yachu.controller.request.GainRequest;
+import game.yachu.controller.request.RecordRequest;
 import game.yachu.controller.request.RollRequest;
 import game.yachu.controller.response.DiceResponse;
 import game.yachu.controller.response.LoadResponse;
 import game.yachu.domain.*;
 import game.yachu.repository.GameStateRepository;
+import game.yachu.repository.RecordRepository;
+import game.yachu.repository.dto.Record;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -16,11 +19,13 @@ import java.util.stream.Collectors;
 @Controller
 public class GameController {
 
-    private final GameStateRepository repository;
+    private final GameStateRepository gameStateRepository;
+    private final RecordRepository recordRepository;
 
     @Autowired
-    public GameController(GameStateRepository repository) {
-        this.repository = repository;
+    public GameController(GameStateRepository gameStateRepository, RecordRepository recordRepository) {
+        this.gameStateRepository = gameStateRepository;
+        this.recordRepository = recordRepository;
     }
 
     @GetMapping("/game/{id}")
@@ -32,13 +37,13 @@ public class GameController {
     @ResponseBody
     @PostMapping("/api/new")
     public Long newGame() {
-        return repository.newGame();
+        return gameStateRepository.newGame();
     }
 
     @ResponseBody
     @PostMapping("/api/{id}/load")
     public LoadResponse load(@PathVariable Long id) {
-        Player player = repository.get(id);
+        Player player = gameStateRepository.get(id);
         List<Integer> diceValues = player.getDices().stream()
                 .map(Dice::getValue)
                 .collect(Collectors.toList());
@@ -49,7 +54,7 @@ public class GameController {
     @ResponseBody
     @PostMapping("/api/{id}/roll")
     public DiceResponse roll(@PathVariable Long id, @RequestBody RollRequest rollRequest) {
-        Player player = repository.get(id);
+        Player player = gameStateRepository.get(id);
         List<Dice> dices = player.rollDices(rollRequest.getFixStates());
         Score calculated = getDiceScore(player, dices);
         return new DiceResponse(dices, calculated, player.getChance());
@@ -64,9 +69,26 @@ public class GameController {
 
     @ResponseBody
     @PostMapping("/api/{id}/gain")
-    public void gain(@PathVariable("id") Long id, @RequestBody GainRequest request) {
-        Player player = repository.get(id);
+    public boolean gain(@PathVariable("id") Long id, @RequestBody GainRequest request) {
+        Player player = gameStateRepository.get(id);
         player.setScore(Genealogy.valueOf(request.getCategory()), request.getGained());
+        if (player.isOver()) {
+            gameStateRepository.deleteGame(id);
+            return true;
+        }
         player.resetState();
+        return false;
+    }
+
+    @ResponseBody
+    @GetMapping("/api/record")
+    public List<Record> findTop10() {
+        return recordRepository.findTop10();
+    }
+
+    @ResponseBody
+    @PostMapping("/api/record/new")
+    public void save(@RequestBody RecordRequest request) {
+        recordRepository.save(new Record(request.getNickname(), request.getScore()));
     }
 }

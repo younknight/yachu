@@ -30,11 +30,12 @@ public class Score {
         choice = -2;
         fourOfKind = -2;
         fullHouse = -2;
-        smallStraight=-2;
+        smallStraight = -2;
         largeStraight = -2;
         yachu = -2;
 
     }
+
     @Builder
     public Score(int aces, int deuces, int threes, int fours,
                  int fives, int sixes, int choice, int fourOfKind,
@@ -91,5 +92,45 @@ public class Score {
         if (score.yachu >= 0) {
             this.yachu = -1;
         }
+    }
+
+    public boolean isFull() {
+        if (aces < 0) {
+            return false;
+        }
+        if (deuces < 0) {
+            return false;
+        }
+        if (threes < 0) {
+            return false;
+        }
+        if (fours < 0) {
+            return false;
+        }
+        if (fives < 0) {
+            return false;
+        }
+        if (sixes < 0) {
+            return false;
+        }
+        if (choice < 0) {
+            return false;
+        }
+        if (fourOfKind < 0) {
+            return false;
+        }
+        if (fullHouse < 0) {
+            return false;
+        }
+        if (smallStraight < 0) {
+            return false;
+        }
+        if (largeStraight < 0) {
+            return false;
+        }
+        if (yachu < 0) {
+            return false;
+        }
+        return true;
     }
 }

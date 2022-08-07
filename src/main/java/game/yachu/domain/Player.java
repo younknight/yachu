@@ -77,9 +77,12 @@ public class Player {
         }
     }
 
+    public boolean isOver() {
+        return score.isFull();
+    }
+
     public void resetState() {
         chance = 0;
-        dices.stream()
-                .forEach(Dice::resetValue);
+        dices.forEach(Dice::resetValue);
     }
 }
