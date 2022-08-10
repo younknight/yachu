@@ -3,6 +3,7 @@ package game.yachu.repository;
 import game.yachu.repository.dto.Record;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.datasource.DataSourceUtils;
+import org.springframework.jdbc.support.JdbcUtils;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -68,26 +69,8 @@ public class RecordRepository {
     }
 
     private void close(Connection conn, PreparedStatement pstmt, ResultSet rs) {
-        if (rs != null) {
-            try {
-                rs.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-        if (pstmt != null) {
-            try {
-                pstmt.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-        if (conn != null) {
-            closeConnection(conn);
-        }
-    }
-
-    private void closeConnection(Connection conn) {
+        JdbcUtils.closeResultSet(rs);
+        JdbcUtils.closeStatement(pstmt);
         DataSourceUtils.releaseConnection(conn, dataSource);
     }
 }
