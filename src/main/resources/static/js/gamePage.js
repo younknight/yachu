@@ -127,6 +127,7 @@ function rollDices() {
 
 }
 
+var checkEnd = 0;
 function gain(index) {
     if (chance == 0) {
         alert("주사위를 굴리십시오");
@@ -168,6 +169,14 @@ function gain(index) {
         let total = categories[categories.length - 1];
         total.innerHTML = Number(total.innerHTML) + Number(score);
 
+        checkEnd++;
+
+        if(checkEnd == 12){
+            document.querySelector('.modal').style.display='block';
+            document.querySelector('.modal_bg').style.display='block';
+            document.getElementById("Score").innerHTML =  Number(total.innerHTML);
+        }
+
         if (!isHomework(index)) {
             return;
         }
@@ -179,7 +188,6 @@ function gain(index) {
             categories[7].innerHTML = BONUS_SCORE;
             total.innerHTML = Number(total.innerHTML) + BONUS_SCORE;
         }
-
     })
 
     function isHomework(index) {

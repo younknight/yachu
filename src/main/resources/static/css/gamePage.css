@@ -82,7 +82,32 @@ img {
     margin-top: -5px;
     border-color: transparent black transparent transparent;
 }
-
+.modal{
+    display: none;
+    width: 500px;
+    height: 500px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin: -250px -250px;
+    background: #eee;
+    border-radius: 20px 20px 20px 20px;
+    z-index: 2;
+}
+.modal h2{
+    text-align: center;
+}
+.modal_bg{
+    display: none;
+    position:absolute;
+    content:"";
+    width:100%;
+    height:100%;
+    background-color:gray;
+    top:0;
+    left:0;
+    z-index:1;
+}
 #scoreBoard {
     background-color: aquamarine;
 }
