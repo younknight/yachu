@@ -9,13 +9,33 @@
 <body>
 <div class="modal_bg">
 </div>
-
+<!--모달 창-->
 <div class="modal">
     <div>
         <h2>게임 종료</h2>
-        <h3>최종 점수: <div id="Score"></div></h3>
+        <h2>최종 점수: <div id="lastScore"></div></h2>
+        <table>
+            <tr>
+                <th>TOP 10</th>
+            </tr>
+            <tr>
+                <td class="top10" id="top1Name">asd</td>
+                <td class="top10" id="top1Score">asd</td>
+            </tr>
+            <tr>
+                <td class="top10" id="top2Name">ssss</td>
+                <td class="top10" id="top2Score">ssss</td>
+            </tr>
+            <tr>
+                <td class="top10" id="top3Name">asdasd</td>
+                <td class="top10" id="top3Score">asdasdasd</td>
+            </tr>
+        </table>
+        <h2>nick name: <input type="text" id="nickname"></h2>
+        <h2><button id="submitData">데이터 베이스</button></h2>
     </div>
 </div>
+<!--모달 창-->
 <aside id="scoreBoard">
     <h2>Score Board</h2>
 
@@ -75,7 +95,7 @@
         </tr>
         <tr class="tooltip">
             <td>FULL_HOUSE
-                <span class="tooltipText tooltip-left">3개의 주사위 눈금과 2개의 주사위 눈금이<br> 동시에 같은 경우</span></td>
+                <span class="tooltipText tooltip-left">3개의 주사위 눈금과 2개의 주사위 눈금이 동시에 같은 경우</span></td>
             <td class="category" id="FULL_HOUSE"></td>
         </tr>
         <tr class="tooltip">

@@ -7,6 +7,7 @@ rollDicesBtn.onclick = function () {
     rollDices();
 }
 
+
 let categories = document.getElementsByClassName("category");
 for (let i = 0; i < categories.length; i++) {
     if(i == 6 || i == 7 || i == 14) {
@@ -127,7 +128,9 @@ function rollDices() {
 
 }
 
-var checkEnd = 0;
+//종료확인용
+let checkEnd = 0;
+
 function gain(index) {
     if (chance == 0) {
         alert("주사위를 굴리십시오");
@@ -168,13 +171,28 @@ function gain(index) {
 
         let total = categories[categories.length - 1];
         total.innerHTML = Number(total.innerHTML) + Number(score);
-
+        let records;
         checkEnd++;
-
-        if(checkEnd == 12){
+        //종료될 경우 모달창 띄우기
+        if(checkEnd == 1){
             document.querySelector('.modal').style.display='block';
             document.querySelector('.modal_bg').style.display='block';
-            document.getElementById("Score").innerHTML =  Number(total.innerHTML);
+            document.getElementById("lastScore").innerHTML =  Number(total.innerHTML);
+            //데이터베이스에 값 보내기
+            let nickname = document.getElementById("nickname");
+            let submitData = document.getElementById("submitData");
+            submitData.onclick = function () {
+                fetch("/api/record/new", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        "nickname": nickname.value,
+                        "score": Number(total.innerHTML),
+                    }),
+                }).then()
+            }
         }
 
         if (!isHomework(index)) {
@@ -201,4 +219,5 @@ function gain(index) {
     function isSatisfiedHomework(subTotal) {
         return subTotal.innerHTML >= HOMEWORK_SCORE;
     }
+
 }

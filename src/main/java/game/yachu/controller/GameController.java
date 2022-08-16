@@ -82,9 +82,7 @@ public class GameController {
 
     @ResponseBody
     @GetMapping("/api/record")
-    public List<Record> findTop10() {
-        return recordRepository.findTop10();
-    }
+    public List<Record> findTop10() {return recordRepository.findTop10();}
 
     @ResponseBody
     @PostMapping("/api/record/new")

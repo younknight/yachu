@@ -45,6 +45,7 @@ img {
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
 }
+/* 말풍선 */
 .tooltip {
     position: relative;
 }
@@ -82,6 +83,7 @@ img {
     margin-top: -5px;
     border-color: transparent black transparent transparent;
 }
+/* 모달관련 */
 .modal{
     display: none;
     width: 500px;
@@ -108,6 +110,10 @@ img {
     left:0;
     z-index:1;
 }
+#lastScore{
+    display: inline;
+}
+
 #scoreBoard {
     background-color: aquamarine;
 }
