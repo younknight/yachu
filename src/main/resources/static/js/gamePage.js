@@ -174,7 +174,7 @@ function gain(index) {
         let records;
         checkEnd++;
         //종료될 경우 모달창 띄우기
-        if(checkEnd == 1){
+        if(checkEnd == 12){
             document.querySelector('.modal').style.display='block';
             document.querySelector('.modal_bg').style.display='block';
             document.getElementById("lastScore").innerHTML =  Number(total.innerHTML);

@@ -38,12 +38,12 @@ public class RecordRepository {
     }
 
     public List<Record> findTop10() {
-        List<Record> records = new ArrayList<>(3);
+        List<Record> records = new ArrayList<>(10);
 
         Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
-        final String sql = "select * from records order by score desc limit 3";
+        final String sql = "select * from records order by score desc limit 10";
         try {
             conn = getConnection();
             pstmt = conn.prepareStatement(sql);
