@@ -99,6 +99,9 @@ img {
 .modal h2{
     text-align: center;
 }
+.modal h3{
+    text-align: center;
+}
 .modal_bg{
     display: none;
     position:absolute;

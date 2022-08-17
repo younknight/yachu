@@ -128,8 +128,6 @@ function rollDices() {
 
 }
 
-//종료확인용
-let checkEnd = 0;
 
 function gain(index) {
     if (chance == 0) {
@@ -152,61 +150,77 @@ function gain(index) {
             "category": category,
             "gained": Number(score),
         }),
-    }).then(() => {
-        element.style.color = "black";
-        chance = 0;
-        fixStates = [false, false, false, false, false];
-        for (let i = 0; i < 5; i++) {
-            document.getElementById("fixedCheckDiv" + (i + 1)).style.display = "none";
-        }
-        for (let index = 0; index < 5; index++) {
-            let diceImg = document.getElementById("diceImg" + (index + 1));
-            diceImg.src = "/images/diceImg0.png";
-        }
-        for (let index = 0; index < categories.length; index++) {
-            if (categories[index].style.color == "gray") {
-                categories[index].innerHTML = "";
+    })
+        .then((response) => response.json())
+        .then((json) => {
+            element.style.color = "black";
+            chance = 0;
+            fixStates = [false, false, false, false, false];
+            for (let i = 0; i < 5; i++) {
+                document.getElementById("fixedCheckDiv" + (i + 1)).style.display = "none";
             }
-        }
-
-        let total = categories[categories.length - 1];
-        total.innerHTML = Number(total.innerHTML) + Number(score);
-        let records;
-        checkEnd++;
-        //종료될 경우 모달창 띄우기
-        if(checkEnd == 12){
-            document.querySelector('.modal').style.display='block';
-            document.querySelector('.modal_bg').style.display='block';
-            document.getElementById("lastScore").innerHTML =  Number(total.innerHTML);
-            //데이터베이스에 값 보내기
-            let nickname = document.getElementById("nickname");
-            let submitData = document.getElementById("submitData");
-            submitData.onclick = function () {
-                fetch("/api/record/new", {
-                    method: "POST",
+            for (let index = 0; index < 5; index++) {
+                let diceImg = document.getElementById("diceImg" + (index + 1));
+                diceImg.src = "/images/diceImg0.png";
+            }
+            for (let index = 0; index < categories.length; index++) {
+                if (categories[index].style.color == "gray") {
+                    categories[index].innerHTML = "";
+                }
+            }
+            let total = categories[categories.length - 1];
+            total.innerHTML = Number(total.innerHTML) + Number(score);
+            //종료될 경우 모달창 띄우기
+            if(json == true){
+                document.querySelector('.modal').style.display='block';
+                document.querySelector('.modal_bg').style.display='block';
+                document.getElementById("lastScore").innerHTML =  Number(total.innerHTML);
+                fetch("/api/record", {
+                    method: "GET",
                     headers: {
                         "Content-Type": "application/json"
                     },
-                    body: JSON.stringify({
-                        "nickname": nickname.value,
-                        "score": Number(total.innerHTML),
-                    }),
-                }).then()
+                }).then((response) => response.json())
+                    .then((json) => {
+                        const element = document.getElementById('top10');
+                        let nickname;
+                        let score;
+                        for (let index = 0; index < 10; index++) {
+                            nickname = json[index].nickname;
+                            score = json[index].score;
+                            element.innerHTML += "Top"+ (index + 1) + ": " + String(nickname) + " " + Number(score) + "<br>";
+                        }
+
+                    });
+                //데이터베이스에 값 보내기
+                let nickname = document.getElementById("nickname");
+                let submitData = document.getElementById("submitData");
+                submitData.onclick = function () {
+                    fetch("/api/record/new", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            "nickname": nickname.value,
+                            "score": Number(total.innerHTML),
+                        }),
+                    })
+                }
             }
-        }
 
-        if (!isHomework(index)) {
-            return;
-        }
+            if (!isHomework(index)) {
+                return;
+            }
 
-        let subTotal = categories[6];
-        subTotal.innerHTML = Number(subTotal.innerHTML) + Number(score);
+            let subTotal = categories[6];
+            subTotal.innerHTML = Number(subTotal.innerHTML) + Number(score);
 
-        if (!hasBonusScore() && isSatisfiedHomework(subTotal)) {
-            categories[7].innerHTML = BONUS_SCORE;
-            total.innerHTML = Number(total.innerHTML) + BONUS_SCORE;
-        }
-    })
+            if (!hasBonusScore() && isSatisfiedHomework(subTotal)) {
+                categories[7].innerHTML = BONUS_SCORE;
+                total.innerHTML = Number(total.innerHTML) + BONUS_SCORE;
+            }
+        })
 
     function isHomework(index) {
         return index >= 0 && index <= 5;
