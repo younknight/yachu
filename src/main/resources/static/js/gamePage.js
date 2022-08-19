@@ -53,6 +53,8 @@ function load() {
             }
             categories[14].innerHTML = total;
             fillScoreBoard(json.diceScore, "gray");
+
+            showChance();
         })
 }
 
@@ -123,8 +125,8 @@ function rollDices() {
             }
 
             fillScoreBoard(json.score, "gray");
+            showChance();
         });
-
 }
 
 function gain(index) {
@@ -180,6 +182,8 @@ function gain(index) {
             total.innerHTML = Number(total.innerHTML) + BONUS_SCORE;
         }
 
+        showChance();
+
     })
 
     function isHomework(index) {
@@ -193,4 +197,47 @@ function gain(index) {
     function isSatisfiedHomework(subTotal) {
         return subTotal.innerHTML >= HOMEWORK_SCORE;
     }
+}
+
+function textFileLoad() {
+    let content = null;
+    let xmlhttp = new XMLHttpRequest();
+    xmlhttp.open("GET", "/text/gameRule.txt", false);
+    xmlhttp.send();
+    if (xmlhttp.status == 200) {
+        content = xmlhttp.responseText;
+        content = content.replace(/\r\n/ig, '<br>');
+        content = content.replace(/\r/ig, '<br>');
+        content = content.replace(/\n/ig, '<br>');
+    }
+    document.getElementById("gameRuleContent").innerHTML = content;
+
+    xmlhttp.open("GET", "/text/genealogy.txt", false);
+    xmlhttp.send();
+    if (xmlhttp.status == 200) {
+        content = xmlhttp.responseText;
+        content = content.replace(/\r\n/ig, '<br>');
+        content = content.replace(/\r/ig, '<br>');
+        content = content.replace(/\n/ig, '<br>');
+    }
+    document.getElementById("genealogyContent").innerHTML = content;
+}
+
+textFileLoad();
+
+function openLayerPopup(popupContent) {
+    document.getElementById("layerPopup").style.display = "flex";
+    document.getElementById(popupContent).style.display = "block";
+}
+
+function closeLayerPopup() {
+    var popupContents = document.getElementsByClassName("layerPopupContent");
+    for(var element of popupContents) {
+        element.style.display = "none";
+    }
+    document.getElementById("layerPopup").style.display = "none";
+}
+
+function showChance() {
+    document.getElementById("chanceText").innerHTML = "남은 횟수 : " + (3 - chance);
 }

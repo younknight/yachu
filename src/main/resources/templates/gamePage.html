@@ -9,7 +9,6 @@
 <body>
 <aside id="scoreBoard">
     <h2>Score Board</h2>
-
     <table>
         <tr>
             <th>Categories</th>
@@ -88,11 +87,16 @@
             <td>Total</td>
             <td class="category" id="Total"></td>
         </tr>
-
     </table>
-
+    <button class="textBtn" id="genealogyShowBtn" onclick="openLayerPopup('genealogyContent')">
+        족보보기
+    </button>
 </aside>
 <main>
+    <button class="textBtn" id="gameRuleShowBtn" onclick="openLayerPopup('gameRuleContent')">
+        게임설명
+    </button>
+    <p id="chanceText">남은 횟수 : 3</p>
     <section id="diceBtnContainer">
         <button class="diceBtn" id="diceBtn1">
             <img src="/images/diceImg0.png" id="diceImg1" alt="diceImg"/>
@@ -118,6 +122,19 @@
     <button id="rollDicesBtn">
         굴리기
     </button>
+    <section id="layerPopup">
+        <div id="layer">
+            <button class="textBtn" id="popUpCloseBtn" onclick="closeLayerPopup()">
+                CLOSE
+            </button>
+            <article class="layerPopupContent" id="gameRuleContent">
+                gameRule
+            </article>
+            <article class="layerPopupContent" id="genealogyContent">
+                genealogy
+            </article>
+        </div>
+    </section>
 </main>
 <script src="" th:src="@{/js/gamePage.js}"></script>
 </body>
