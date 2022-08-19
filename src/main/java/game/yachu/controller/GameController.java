@@ -9,13 +9,16 @@ import game.yachu.domain.*;
 import game.yachu.repository.GameStateRepository;
 import game.yachu.repository.RecordRepository;
 import game.yachu.repository.dto.Record;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Controller
 public class GameController {
 
@@ -36,8 +39,11 @@ public class GameController {
 
     @ResponseBody
     @PostMapping("/api/new")
-    public Long newGame() {
-        return gameStateRepository.newGame();
+    public Long newGame(HttpSession session) {
+        Long id = gameStateRepository.newGame();
+        session.setAttribute("id", id);
+        log.info("session created id = {}, maxInactiveInterval = {}", id, session.getMaxInactiveInterval());
+        return id;
     }
 
     @ResponseBody
