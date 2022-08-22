@@ -13,6 +13,6 @@ public class WebConfig implements WebMvcConfigurer {
                 .order(1)
                 .addPathPatterns("/**")
                 .excludePathPatterns("/", "/api/record/**", "/api/new",
-                        "/css/**", "/js/**", "/images/**", "/*.html", "/*.ico", "/error");
+                        "/css/**", "/js/**", "/images/**", "/text/*.txt", "/*.html", "/*.ico", "/error");
     }
 }
