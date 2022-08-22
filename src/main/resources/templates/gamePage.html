@@ -127,6 +127,28 @@
             <article class="layerPopupContent" id="gameRuleContent">
                 gameRule
             </article>
+            <article class="layerPopupContent" id="recordContent">
+                <h2>Game Over!</h2>
+                <input type="text" id="recordNickname" placeholder="닉네임을 입력해주세요 (20자 이하)" maxlength="20">
+                <p id="recordScore">Score : 200</p>
+                <button id="recordBtn">등록</button>
+            </article>
+            <article class="layerPopupContent" id="rankingContent">
+                <table id="rankingTable">
+                    <thead>
+                    <tr>
+                        <th colspan="3">Ranking</th>
+                    </tr>
+                    <tr>
+                        <th>순위</th>
+                        <th>닉네임</th>
+                        <th>점수</th>
+                    </tr>
+                    </thead>
+                    <tbody id="rankingTableBody">
+                    </tbody>
+                </table>
+            </article>
         </div>
     </section>
 </main>

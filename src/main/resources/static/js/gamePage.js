@@ -170,43 +170,9 @@ function gain(index) {
             }
             let total = categories[categories.length - 1];
             total.innerHTML = Number(total.innerHTML) + Number(score);
-            //종료될 경우 모달창 띄우기
-            if (json == true) {
-                document.querySelector('.modal').style.display = 'block';
-                document.querySelector('.modal_bg').style.display = 'block';
-                document.getElementById("lastScore").innerHTML = Number(total.innerHTML);
-                fetch("/api/record", {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                }).then((response) => response.json())
-                    .then((json) => {
-                        const element = document.getElementById('top10');
-                        let nickname;
-                        let score;
-                        for (let index = 0; index < 10; index++) {
-                            nickname = json[index].nickname;
-                            score = json[index].score;
-                            element.innerHTML += "Top" + (index + 1) + ": " + String(nickname) + " " + Number(score) + "<br>";
-                        }
 
-                    });
-                //데이터베이스에 값 보내기
-                let nickname = document.getElementById("nickname");
-                let submitData = document.getElementById("submitData");
-                submitData.onclick = function () {
-                    fetch("/api/record/new", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify({
-                            "nickname": nickname.value,
-                            "score": Number(total.innerHTML),
-                        }),
-                    })
-                }
+            if (json == true) {
+                openRecordPopup(total);
             }
 
             showChance();
@@ -236,42 +202,89 @@ function gain(index) {
     function isSatisfiedHomework(subTotal) {
         return subTotal.innerHTML >= HOMEWORK_SCORE;
     }
+
+    function openRecordPopup(recordScore) {
+        openLayerPopup("recordContent");
+        document.getElementById("popUpCloseBtn").style.display = "none";
+        document.getElementById("rollDicesBtn").onclick = null;
+        document.getElementById("recordScore").innerHTML = "Score : " + recordScore.innerHTML;
+        document.getElementById("recordBtn").onclick = () => recordRanking();
+    }
+
+    function recordRanking() {
+        const recordNickname = document.getElementById("recordNickname").value;
+        const recordScore = Number(categories[14].innerHTML);
+        fetch("/api/record/new", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                "nickname": recordNickname,
+                "score": recordScore,
+            }),
+        }).then(() => {
+            openRankingPopup();
+        })
+    }
+
+    function openRankingPopup() {
+        loadRanking();
+        openLayerPopup("rankingContent");
+        document.getElementById("recordContent").style.display = "none";
+    }
+
+    function loadRanking() {
+        fetch("/api/record", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            },
+        }).then((response) => response.json())
+            .then((json) => {
+                for(let ranking = 0; ranking < 10; ranking++) {
+                    let tmpTableRow = document.createElement("tr");
+
+                    let tmpRankingNum = document.createElement("td");
+                    tmpRankingNum.innerHTML = ranking + 1;
+                    tmpTableRow.appendChild(tmpRankingNum);
+
+                    let tmpRankingNickName = document.createElement("td");
+                    let tmpRankingScore = document.createElement("td");
+                    if(ranking < json.length) {
+                        tmpRankingNickName.innerHTML = json[ranking].nickname;
+                        tmpRankingScore.innerHTML = json[ranking].score;
+                    }
+                    tmpTableRow.appendChild(tmpRankingNickName);
+                    tmpTableRow.appendChild(tmpRankingScore);
+
+                    document.getElementById("rankingTableBody").appendChild(tmpTableRow);
+                }
+            });
+    }
 }
 
 function textFileLoad() {
-    let content = null;
-    let xmlhttp = new XMLHttpRequest();
-    xmlhttp.open("GET", "/text/gameRule.txt", false);
-    xmlhttp.send();
-    if (xmlhttp.status == 200) {
-        content = xmlhttp.responseText;
-        content = content.replace(/\r\n/ig, '<br>');
-        content = content.replace(/\r/ig, '<br>');
-        content = content.replace(/\n/ig, '<br>');
-    }
-    document.getElementById("gameRuleContent").innerHTML = content;
-
-    xmlhttp.open("GET", "/text/genealogy.txt", false);
-    xmlhttp.send();
-    if (xmlhttp.status == 200) {
-        content = xmlhttp.responseText;
-        content = content.replace(/\r\n/ig, '<br>');
-        content = content.replace(/\r/ig, '<br>');
-        content = content.replace(/\n/ig, '<br>');
-    }
-    document.getElementById("genealogyContent").innerHTML = content;
+    fetch("/text/gameRule.txt")
+        .then((res) => res.text())
+        .then((data) => {
+            data = data.replace(/\r\n/ig, '<br>');
+            data = data.replace(/\r/ig, '<br>');
+            data = data.replace(/\n/ig, '<br>');
+            document.getElementById('gameRuleContent').innerHTML = data;
+        })
 }
 
 textFileLoad();
 
 function openLayerPopup(popupContent) {
     document.getElementById("layerPopup").style.display = "flex";
-    document.getElementById(popupContent).style.display = "block";
+    document.getElementById(popupContent).style.display = "flex";
 }
 
 function closeLayerPopup() {
     var popupContents = document.getElementsByClassName("layerPopupContent");
-    for(var element of popupContents) {
+    for (var element of popupContents) {
         element.style.display = "none";
     }
     document.getElementById("layerPopup").style.display = "none";
