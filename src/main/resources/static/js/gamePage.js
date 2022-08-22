@@ -1,6 +1,4 @@
 const id = parseId();
-const HOMEWORK_SCORE = 63;
-const BONUS_SCORE = 35;
 
 let rollDicesBtn = document.getElementById("rollDicesBtn");
 rollDicesBtn.onclick = function () {
@@ -35,23 +33,7 @@ function load() {
                 let diceImg = document.getElementById("diceImg" + (index + 1));
                 diceImg.src = "/images/diceImg" + value + ".png";
             }
-            console.log(json.playerScore);
             fillScoreBoard(json.playerScore, "black");
-            let subTotal = 0;
-            let total = 0;
-            for (let i = 0; i < 6; i++) {
-                subTotal += Number(categories[i].innerHTML);
-            }
-            total += subTotal;
-            categories[6].innerHTML = subTotal;
-            if (subTotal >= HOMEWORK_SCORE) {
-                total += BONUS_SCORE;
-                categories[7].innerHTML = BONUS_SCORE;
-            }
-            for (let i = 8; i < 14; i++) {
-                total += Number(categories[i].innerHTML);
-            }
-            categories[14].innerHTML = total;
             fillScoreBoard(json.diceScore, "gray");
 
             showChance();
@@ -79,26 +61,18 @@ function toggleFixed(index) {
     fixStates[index] = !fixStates[index];
 }
 
-function setScore(score, category, color) {
-    if (score < 0) return;
-    let element = document.getElementById(category);
-    element.innerHTML = score;
+function setScore(category, color) {
+    if (!category.acquired) return;
+    let element = document.getElementById(category.genealogy);
+    element.innerHTML = category.point;
     element.style.color = color;
 }
 
 function fillScoreBoard(score, color) {
-    setScore(score.aces, "ACES", color);
-    setScore(score.deuces, "DEUCES", color);
-    setScore(score.threes, "THREES", color);
-    setScore(score.fours, "FOURS", color);
-    setScore(score.fives, "FIVES", color);
-    setScore(score.sixes, "SIXES", color);
-    setScore(score.choice, "CHOICE", color);
-    setScore(score.fourOfKind, "FOUR_OF_KIND", color);
-    setScore(score.fullHouse, "FULL_HOUSE", color);
-    setScore(score.smallStraight, "SMALL_STRAIGHT", color);
-    setScore(score.largeStraight, "LARGE_STRAIGHT", color);
-    setScore(score.yachu, "YACHU", color);
+    for (let i = 0; i < score.categories.length; i++) {
+        let category = score.categories[i];
+        setScore(category, color);
+    }
 }
 
 function rollDices() {
@@ -153,7 +127,6 @@ function gain(index) {
     })
         .then((response) => response.json())
         .then((json) => {
-            element.style.color = "black";
             chance = 0;
             fixStates = [false, false, false, false, false];
             for (let i = 0; i < 5; i++) {
@@ -168,46 +141,25 @@ function gain(index) {
                     categories[index].innerHTML = "";
                 }
             }
-            let total = categories[categories.length - 1];
-            total.innerHTML = Number(total.innerHTML) + Number(score);
 
-            if (json == true) {
-                openRecordPopup(total);
+            setScore(json.score.categories[index], "black");
+            setScore(json.score.categories[6], "black");
+            setScore(json.score.categories[7], "black");
+            setScore(json.score.categories[14], "black");
+
+            if (json.over) {
+                openRecordPopup(json.score.categories[14].point);
             }
 
             showChance();
 
-            if (!isHomework(index)) {
-                return;
-
-            }
-            let subTotal = categories[6];
-
-            subTotal.innerHTML = Number(subTotal.innerHTML) + Number(score);
-            if (!hasBonusScore() && isSatisfiedHomework(subTotal)) {
-                categories[7].innerHTML = BONUS_SCORE;
-                total.innerHTML = Number(total.innerHTML) + BONUS_SCORE;
-
-            }
         })
-
-    function isHomework(index) {
-        return index >= 0 && index <= 5;
-    }
-
-    function hasBonusScore() {
-        return categories[7].innerHTML == BONUS_SCORE;
-    }
-
-    function isSatisfiedHomework(subTotal) {
-        return subTotal.innerHTML >= HOMEWORK_SCORE;
-    }
 
     function openRecordPopup(recordScore) {
         openLayerPopup("recordContent");
         document.getElementById("popUpCloseBtn").style.display = "none";
         document.getElementById("rollDicesBtn").onclick = null;
-        document.getElementById("recordScore").innerHTML = "Score : " + recordScore.innerHTML;
+        document.getElementById("recordScore").innerHTML = "Score : " + recordScore;
         document.getElementById("recordBtn").onclick = () => recordRanking();
     }
 
@@ -226,7 +178,6 @@ function gain(index) {
         })
             .then((response) => response.json())
             .then((json) => {
-                console.log(json);
                 loadRanking(json);
                 openRankingPopup();
             })

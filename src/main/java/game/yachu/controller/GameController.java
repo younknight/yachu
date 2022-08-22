@@ -4,6 +4,7 @@ import game.yachu.controller.request.GainRequest;
 import game.yachu.controller.request.RecordRequest;
 import game.yachu.controller.request.RollRequest;
 import game.yachu.controller.response.DiceResponse;
+import game.yachu.controller.response.GainResponse;
 import game.yachu.controller.response.LoadResponse;
 import game.yachu.domain.*;
 import game.yachu.repository.GameStateRepository;
@@ -75,16 +76,16 @@ public class GameController {
 
     @ResponseBody
     @PostMapping("/api/{id}/gain")
-    public boolean gain(@PathVariable("id") Long id, @RequestBody GainRequest request) {
+    public GainResponse gain(@PathVariable("id") Long id, @RequestBody GainRequest request) {
         Player player = gameStateRepository.get(id);
         player.setScore(Genealogy.valueOf(request.getCategory()), request.getGained());
         if (player.isOver()) {
             log.info("Game is Over");
             gameStateRepository.deleteGame(id);
-            return true;
+            return new GainResponse(player.getScore(), true);
         }
         player.resetState();
-        return false;
+        return new GainResponse(player.getScore(), false);
     }
 
     @ResponseBody
