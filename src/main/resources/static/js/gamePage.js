@@ -223,18 +223,21 @@ function gain(index) {
                 "nickname": recordNickname,
                 "score": recordScore,
             }),
-        }).then(() => {
-            openRankingPopup();
         })
+            .then((response) => response.json())
+            .then((json) => {
+                console.log(json);
+                loadRanking(json);
+                openRankingPopup();
+            })
     }
 
     function openRankingPopup() {
-        loadRanking();
         openLayerPopup("rankingContent");
         document.getElementById("recordContent").style.display = "none";
     }
 
-    function loadRanking() {
+    function loadRanking(rankingId) {
         fetch("/api/record", {
             method: "GET",
             headers: {
@@ -242,8 +245,11 @@ function gain(index) {
             },
         }).then((response) => response.json())
             .then((json) => {
-                for(let ranking = 0; ranking < 10; ranking++) {
+                for (let ranking = 0; ranking < 10; ranking++) {
                     let tmpTableRow = document.createElement("tr");
+                    if (json[ranking].id == rankingId) {
+                        tmpTableRow.style.color = "green";
+                    }
 
                     let tmpRankingNum = document.createElement("td");
                     tmpRankingNum.innerHTML = ranking + 1;
@@ -251,7 +257,7 @@ function gain(index) {
 
                     let tmpRankingNickName = document.createElement("td");
                     let tmpRankingScore = document.createElement("td");
-                    if(ranking < json.length) {
+                    if (ranking < json.length) {
                         tmpRankingNickName.innerHTML = json[ranking].nickname;
                         tmpRankingScore.innerHTML = json[ranking].score;
                     }

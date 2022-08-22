@@ -66,7 +66,7 @@ public class GameController {
         return new DiceResponse(dices, calculated, player.getChance());
     }
 
-    private static Score getDiceScore(Player player, List<Dice> dices) {
+    private Score getDiceScore(Player player, List<Dice> dices) {
         Rank rank = new Rank(dices);
         Score calculated = rank.calculate();
         calculated.hasGained(player.getScore());
@@ -79,6 +79,7 @@ public class GameController {
         Player player = gameStateRepository.get(id);
         player.setScore(Genealogy.valueOf(request.getCategory()), request.getGained());
         if (player.isOver()) {
+            log.info("Game is Over");
             gameStateRepository.deleteGame(id);
             return true;
         }
@@ -94,7 +95,10 @@ public class GameController {
 
     @ResponseBody
     @PostMapping("/api/record/new")
-    public void save(@RequestBody RecordRequest request) {
-        recordRepository.save(new Record(request.getNickname(), request.getScore()));
+    public Long save(@RequestBody RecordRequest request) {
+        Record record = new Record(request.getNickname(), request.getScore());
+        recordRepository.save(record); // record id 삽입
+        log.info("Record Save - id={}", record.getId());
+        return record.getId();
     }
 }
