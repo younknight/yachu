@@ -30,11 +30,10 @@ public class Score {
     // 플레이어가 이미 획득한 점수임을 표시
     public void hasGained(Score score /* playerScore */) {
         for (int i = 0; i < categories.size(); i++) {
-            Category rankCategory = this.categories.get(i); // 족보를 계산한 score를 기록한 category
-            Category playerCategory = score.categories.get(i); // player의 score를 기록한 category
-            if (!playerCategory.isAcquired()) {
-                // 플레이어가 획득한 점수는 css를 바꾸면 안되고, 획득하지 않은 점수는 회색으로 칠해줘야 하는데...
-                rankCategory.acquire(); // boolean 값이 true면 css 바꾸지 마!!
+            Category rankCategory = this.categories.get(i); // 족보를 계산한 score의 category
+            Category playerCategory = score.categories.get(i); // player가 획득한 score의 category
+            if (!playerCategory.isAcquired()) { // player가 획득하지 않은 category만 acquire
+                rankCategory.acquire();
             }
         }
     }

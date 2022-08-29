@@ -55,7 +55,7 @@ public class Rank {
     }
 
     private int calcFullHouse() {
-        if (checkTriple() && checkPair()) {
+        if (checkTriple() && checkPair() || isYachu()) {
             return calcChoice();
         }
         return 0;
@@ -97,11 +97,18 @@ public class Rank {
     }
 
     private int calcYachu() {
-        for (int index = 1; index <= 6; index++) {
-            if (count[index] == 5) {
-                return 50;
-            }
+        if (isYachu()) {
+            return 50;
         }
         return 0;
+    }
+
+    private boolean isYachu() {
+        for (int index = 1; index <= 6; index++) {
+            if (count[index] == 5) {
+                return true;
+            }
+        }
+        return false;
     }
 }

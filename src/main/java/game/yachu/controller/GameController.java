@@ -3,9 +3,9 @@ package game.yachu.controller;
 import game.yachu.controller.request.GainRequest;
 import game.yachu.controller.request.RecordRequest;
 import game.yachu.controller.request.RollRequest;
-import game.yachu.controller.response.DiceResponse;
 import game.yachu.controller.response.GainResponse;
 import game.yachu.controller.response.LoadResponse;
+import game.yachu.controller.response.RollResponse;
 import game.yachu.domain.*;
 import game.yachu.repository.GameStateRepository;
 import game.yachu.repository.RecordRepository;
@@ -60,11 +60,11 @@ public class GameController {
 
     @ResponseBody
     @PostMapping("/api/{id}/roll")
-    public DiceResponse roll(@PathVariable Long id, @RequestBody RollRequest rollRequest) {
+    public RollResponse roll(@PathVariable Long id, @RequestBody RollRequest rollRequest) {
         Player player = gameStateRepository.get(id);
         List<Dice> dices = player.rollDices(rollRequest.getFixStates());
         Score calculated = getDiceScore(player, dices);
-        return new DiceResponse(dices, calculated, player.getChance());
+        return new RollResponse(dices, calculated, player.getChance());
     }
 
     private Score getDiceScore(Player player, List<Dice> dices) {
