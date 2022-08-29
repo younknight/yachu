@@ -32,6 +32,11 @@ button {
     cursor: pointer;
 }
 
+a {
+    color: white;
+    text-decoration: none;
+}
+
 table {
     width: 100%;
 }
@@ -63,6 +68,9 @@ table {
 
 .layerPopupContent {
     display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     width: 100%;
     height: 100%;
     color: white;
@@ -165,16 +173,11 @@ table {
     margin: 0;
 }
 
-#recordContent {
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
 #recordNickname {
     width: 220px;
 }
 
 #rankingTable {
+    height: 80%;
     text-align: center;
 }

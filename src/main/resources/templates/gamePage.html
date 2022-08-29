@@ -90,68 +90,48 @@
     </table>
 </aside>
 <main>
-    <button class="textBtn" id="gameRuleShowBtn" onclick="openLayerPopup('gameRuleContent')">
+    <button class="textBtn" id="gameRuleShowBtn">
         게임설명
     </button>
     <p id="chanceText">남은 횟수 : 3</p>
     <section id="diceBtnContainer">
-        <button class="diceBtn" id="diceBtn1">
-            <img src="/images/diceImg0.png" id="diceImg1" alt="diceImg"/>
-            <div class="fixedCheckDiv" id="fixedCheckDiv1"></div>
-        </button>
-        <button class="diceBtn" id="diceBtn2">
-            <img src="/images/diceImg0.png" id="diceImg2" alt="diceImg"/>
-            <div class="fixedCheckDiv" id="fixedCheckDiv2"></div>
-        </button>
-        <button class="diceBtn" id="diceBtn3">
-            <img src="/images/diceImg0.png" id="diceImg3" alt="diceImg"/>
-            <div class="fixedCheckDiv" id="fixedCheckDiv3"></div>
-        </button>
-        <button class="diceBtn" id="diceBtn4">
-            <img src="/images/diceImg0.png" id="diceImg4" alt="diceImg"/>
-            <div class="fixedCheckDiv" id="fixedCheckDiv4"></div>
-        </button>
-        <button class="diceBtn" id="diceBtn5">
-            <img src="/images/diceImg0.png" id="diceImg5" alt="diceImg"/>
-            <div class="fixedCheckDiv" id="fixedCheckDiv5"></div>
-        </button>
     </section>
     <button id="rollDicesBtn">
         굴리기
     </button>
-    <section id="layerPopup">
-        <div id="layer">
-            <button class="textBtn" id="popUpCloseBtn" onclick="closeLayerPopup()">
-                CLOSE
-            </button>
-            <article class="layerPopupContent" id="gameRuleContent">
-                gameRule
-            </article>
-            <article class="layerPopupContent" id="recordContent">
-                <h2>Game Over!</h2>
-                <input type="text" id="recordNickname" placeholder="닉네임을 입력해주세요 (20자 이하)" maxlength="20">
-                <p id="recordScore">Score : 200</p>
-                <button id="recordBtn">등록</button>
-            </article>
-            <article class="layerPopupContent" id="rankingContent">
-                <table id="rankingTable">
-                    <thead>
-                    <tr>
-                        <th colspan="3">Ranking</th>
-                    </tr>
-                    <tr>
-                        <th>순위</th>
-                        <th>닉네임</th>
-                        <th>점수</th>
-                    </tr>
-                    </thead>
-                    <tbody id="rankingTableBody">
-                    </tbody>
-                </table>
-            </article>
-        </div>
-    </section>
 </main>
+<section id="layerPopup">
+    <div id="layer">
+        <button class="textBtn" id="popUpCloseBtn">
+            CLOSE
+        </button>
+        <article class="layerPopupContent" id="gameRuleContent">
+            gameRule
+        </article>
+        <article class="layerPopupContent" id="recordContent">
+            <h2>Game Over!</h2>
+            <input type="text" id="recordNickname" placeholder="닉네임을 입력해주세요 (20자 이하)" maxlength="20">
+            <p id="recordScore">Score : 200</p>
+            <button id="recordBtn">등록</button>
+        </article>
+        <article class="layerPopupContent" id="rankingContent">
+            <table id="rankingTable">
+                <thead>
+                <tr>
+                    <th colspan="3">Ranking</th>
+                </tr>
+                <tr>
+                    <th>순위</th>
+                    <th>닉네임</th>
+                    <th>점수</th>
+                </tr>
+                </thead>
+                <tbody id="rankingTableBody">
+                </tbody>
+            </table>
+        </article>
+    </div>
+</section>
 <script src="" th:src="@{/js/gamePage.js}"></script>
 </body>
 </html>
