@@ -6,6 +6,8 @@ import java.time.LocalDateTime;
 
 @Data
 public class Record {
+
+    private Long id;
     private String nickname;
     private int score;
     private LocalDateTime dateTime;
@@ -16,7 +18,8 @@ public class Record {
         this.dateTime = LocalDateTime.now();
     }
 
-    public Record(String nickname, int score, LocalDateTime dateTime) {
+    public Record(Long id, String nickname, int score, LocalDateTime dateTime) {
+        this.id = id;
         this.nickname = nickname;
         this.score = score;
         this.dateTime = dateTime;

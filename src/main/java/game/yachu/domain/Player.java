@@ -37,44 +37,7 @@ public class Player {
     }
 
     public void setScore(Genealogy select, int gained) {
-        switch (select) {
-            case ACES:
-                score.setAces(gained);
-                break;
-            case DEUCES:
-                score.setDeuces(gained);
-                break;
-            case THREES:
-                score.setThrees(gained);
-                break;
-            case FOURS:
-                score.setFours(gained);
-                break;
-            case FIVES:
-                score.setFives(gained);
-                break;
-            case SIXES:
-                score.setSixes(gained);
-                break;
-            case CHOICE:
-                score.setChoice(gained);
-                break;
-            case FOUR_OF_KIND:
-                score.setFourOfKind(gained);
-                break;
-            case FULL_HOUSE:
-                score.setFullHouse(gained);
-                break;
-            case SMALL_STRAIGHT:
-                score.setSmallStraight(gained);
-                break;
-            case LARGE_STRAIGHT:
-                score.setLargeStraight(gained);
-                break;
-            case YACHU:
-                score.setYachu(gained);
-                break;
-        }
+        score.gainPoint(select, gained);
     }
 
     public boolean isOver() {

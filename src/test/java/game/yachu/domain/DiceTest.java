@@ -10,9 +10,6 @@ class DiceTest {
 
     @Test
     void 주사위는_1부터_6까지의_값만_가진다() {
-        assertThatThrownBy(() -> new Dice(0))
-                .isInstanceOf(IllegalArgumentException.class);
-
         assertThatThrownBy(() -> new Dice(7))
                 .isInstanceOf(IllegalArgumentException.class);
 
