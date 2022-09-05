@@ -9,12 +9,12 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor
-public class DiceResponse {
+public class RollResponse {
     private List<Dice> dices;
     private Score score;
     private int chance;
 
-    public DiceResponse(List<Dice> dices, Score score, int chance) {
+    public RollResponse(List<Dice> dices, Score score, int chance) {
         this.dices = dices;
         this.score = score;
         this.chance = chance;

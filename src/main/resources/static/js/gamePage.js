@@ -1,60 +1,11 @@
 const id = parseId();
-const HOMEWORK_SCORE = 63;
-const BONUS_SCORE = 35;
-
-let rollDicesBtn = document.getElementById("rollDicesBtn");
-rollDicesBtn.onclick = function () {
-    rollDices();
-}
-
-
-let categories = document.getElementsByClassName("category");
-for (let i = 0; i < categories.length; i++) {
-    if(i == 6 || i == 7 || i == 14) {
-        continue;
-    }
-    categories[i].onclick = () => gain(i);
-}
-
-for (let i = 0; i < 5; i++) {
-    document.getElementById("fixedCheckDiv" + (i + 1)).style.display = "none"
-    document.getElementById("diceBtn" + (i + 1)).onclick = () => toggleFixed(i);
-}
-
-load();
 let chance = 0;
+let fixStates = [false, false, false, false, false];
+let categories = document.getElementsByClassName("category");
+let tmpScoreBoard = new Map();
 
-function load() {
-    fetch("/api/" + id + "/load", {
-        method: "POST"
-    })
-        .then((response) => response.json())
-        .then((json) => {
-            chance = json.chance;
-            for (let index = 0; index < 5; index++) {
-                const value = json.dices[index];
-                let diceImg = document.getElementById("diceImg" + (index + 1));
-                diceImg.src = "/images/diceImg" + value + ".png";
-            }
-            console.log(json.playerScore);
-            fillScoreBoard(json.playerScore, "black");
-            let subTotal = 0;
-            let total = 0;
-            for (let i = 0; i < 6; i++) {
-                subTotal += Number(categories[i].innerHTML);
-            }
-            total += subTotal;
-            categories[6].innerHTML = subTotal;
-            if (subTotal >= HOMEWORK_SCORE) {
-                total += BONUS_SCORE;
-                categories[7].innerHTML = BONUS_SCORE;
-            }
-            for (let i = 8; i < 14; i++) {
-                total += Number(categories[i].innerHTML);
-            }
-            categories[14].innerHTML = total;
-            fillScoreBoard(json.diceScore, "gray");
-        })
+window.onload = function () {
+    loadGamePage();
 }
 
 function parseId() {
@@ -62,42 +13,70 @@ function parseId() {
     return array[array.length - 1];
 }
 
-let fixStates = [false, false, false, false, false];
-
-function toggleFixed(index) {
-    if (chance == 0) {
-        return;
-    }
-    let fixedCheckDiv = document.getElementById("fixedCheckDiv" + (index + 1));
-    if (fixedCheckDiv.style.display == "none") {
-        fixedCheckDiv.style.display = "block";
-    } else {
-        fixedCheckDiv.style.display = "none";
-    }
-
-    fixStates[index] = !fixStates[index];
+function loadGamePage() {
+    loadDice();
+    loadGameState();
+    loadTextFile();
+    addBtnFunction();
 }
 
-function setScore(score, category, color) {
-    if (score < 0) return;
-    let element = document.getElementById(category);
-    element.innerHTML = score;
-    element.style.color = color;
+function addBtnFunction() {
+    document.getElementById("rollDicesBtn").onclick = () => rollDices();
+    document.getElementById("gameRuleShowBtn").onclick = () => openLayerPopup('gameRuleContent');
+    document.getElementById("popUpCloseBtn").onclick = () => closeLayerPopup();
+
+    for (let i = 0; i < categories.length; i++) {
+        if (i == 6 || i == 7 || i == 14) {
+            continue;
+        }
+        categories[i].onclick = () => gain(i);
+    }
 }
 
-function fillScoreBoard(score, color) {
-    setScore(score.aces, "ACES", color);
-    setScore(score.deuces, "DEUCES", color);
-    setScore(score.threes, "THREES", color);
-    setScore(score.fours, "FOURS", color);
-    setScore(score.fives, "FIVES", color);
-    setScore(score.sixes, "SIXES", color);
-    setScore(score.choice, "CHOICE", color);
-    setScore(score.fourOfKind, "FOUR_OF_KIND", color);
-    setScore(score.fullHouse, "FULL_HOUSE", color);
-    setScore(score.smallStraight, "SMALL_STRAIGHT", color);
-    setScore(score.largeStraight, "LARGE_STRAIGHT", color);
-    setScore(score.yachu, "YACHU", color);
+function loadDice() {
+    for (let i = 0; i < 5; i++) {
+        let tmpDiceBtn = document.createElement("button");
+        tmpDiceBtn.className = "diceBtn";
+        tmpDiceBtn.id = "diceBtn" + (i + 1);
+        tmpDiceBtn.onclick = () => toggleFixed(i);
+
+        let tmpDiceImg = document.createElement("img");
+        tmpDiceImg.src = "/images/diceImg0.png";
+        tmpDiceImg.id = "diceImg" + (i + 1);
+        tmpDiceImg.alt = "diceImg";
+        tmpDiceBtn.appendChild(tmpDiceImg);
+
+        let tmpFixedCheckDiv = document.createElement("div");
+        tmpFixedCheckDiv.className = "fixedCheckDiv";
+        tmpFixedCheckDiv.id = "fixedCheckDiv" + (i + 1);
+        tmpFixedCheckDiv.style.display = "none";
+        tmpDiceBtn.appendChild(tmpFixedCheckDiv);
+
+        document.getElementById("diceBtnContainer").appendChild(tmpDiceBtn);
+    }
+}
+
+function loadGameState() {
+    fetch("/api/" + id + "/load", {
+        method: "POST"
+    })
+        .then((response) => response.json())
+        .then((json) => {
+            setGameState(json.chance, json.dices, json.playerScore, "black");
+            fillScoreBoard(json.diceScore, "gray");
+            setTmpScoreBoard(json.diceScore);
+        })
+}
+
+function loadTextFile() {
+    fetch("/text/gameRule.txt")
+        .then((res) => res.text())
+        .then((data) => {
+            data = data.replace(/\r\n/ig, '<br>');
+            data = data.replace(/\r/ig, '<br>');
+            data = data.replace(/\n/ig, '<br>');
+            document.getElementById('gameRuleContent').innerHTML = data;
+        })
 }
 
 function rollDices() {
@@ -117,17 +96,14 @@ function rollDices() {
     })
         .then((response) => response.json())
         .then((json) => {
-            chance = json.chance;
+            let diceStates = [];
             for (let index = 0; index < 5; index++) {
-                let diceImg = document.getElementById("diceImg" + (index + 1));
-                diceImg.src = "/images/diceImg" + json.dices[index].value + ".png";
+                diceStates.push(json.dices[index].value);
             }
-
-            fillScoreBoard(json.score, "gray");
+            setGameState(json.chance, diceStates, json.score, "gray");
+            setTmpScoreBoard(json.score)
         });
-
 }
-
 
 function gain(index) {
     if (chance == 0) {
@@ -137,9 +113,7 @@ function gain(index) {
 
     let element = categories[index];
     const category = element.id;
-    const score = element.innerHTML;
-
-    categories[index].onclick = null;
+    const score = tmpScoreBoard.get(category);
 
     fetch("/api/" + id + "/gain", {
         method: "POST",
@@ -153,85 +127,158 @@ function gain(index) {
     })
         .then((response) => response.json())
         .then((json) => {
-            element.style.color = "black";
-            chance = 0;
+            let diceStates = [0, 0, 0, 0, 0];
             fixStates = [false, false, false, false, false];
             for (let i = 0; i < 5; i++) {
                 document.getElementById("fixedCheckDiv" + (i + 1)).style.display = "none";
             }
-            for (let index = 0; index < 5; index++) {
-                let diceImg = document.getElementById("diceImg" + (index + 1));
-                diceImg.src = "/images/diceImg0.png";
-            }
+            setGameState(0, diceStates, json.score, "black");
+            tmpScoreBoard.clear();
             for (let index = 0; index < categories.length; index++) {
                 if (categories[index].style.color == "gray") {
-                    categories[index].innerHTML = "";
-                }
-            }
-            let total = categories[categories.length - 1];
-            total.innerHTML = Number(total.innerHTML) + Number(score);
-            //종료될 경우 모달창 띄우기
-            if(json == true){
-                document.querySelector('.modal').style.display='block';
-                document.querySelector('.modal_bg').style.display='block';
-                document.getElementById("lastScore").innerHTML =  Number(total.innerHTML);
-                fetch("/api/record", {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                }).then((response) => response.json())
-                    .then((json) => {
-                        const element = document.getElementById('top10');
-                        let nickname;
-                        let score;
-                        for (let index = 0; index < 10; index++) {
-                            nickname = json[index].nickname;
-                            score = json[index].score;
-                            element.innerHTML += "Top"+ (index + 1) + ": " + String(nickname) + " " + Number(score) + "<br>";
-                        }
-
-                    });
-                //데이터베이스에 값 보내기
-                let nickname = document.getElementById("nickname");
-                let submitData = document.getElementById("submitData");
-                submitData.onclick = function () {
-                    fetch("/api/record/new", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify({
-                            "nickname": nickname.value,
-                            "score": Number(total.innerHTML),
-                        }),
-                    })
+                    categories[index].innerHTML = "0";
                 }
             }
 
-            if (!isHomework(index)) {
-                return;
-            }
-
-            let subTotal = categories[6];
-            subTotal.innerHTML = Number(subTotal.innerHTML) + Number(score);
-
-            if (!hasBonusScore() && isSatisfiedHomework(subTotal)) {
-                categories[7].innerHTML = BONUS_SCORE;
-                total.innerHTML = Number(total.innerHTML) + BONUS_SCORE;
+            if (json.over) {
+                openRecordPopup(json.score.categories[14].point);
             }
         })
 
-    function isHomework(index) {
-        return index >= 0 && index <= 5;
+    function openRecordPopup(recordScore) {
+        openLayerPopup("recordContent");
+        document.getElementById("popUpCloseBtn").style.display = "none";
+        document.getElementById("rollDicesBtn").onclick = null;
+        document.getElementById("recordScore").innerHTML = "Score : " + recordScore;
+        document.getElementById("recordBtn").onclick = () => recordRanking(recordScore);
     }
 
-    function hasBonusScore() {
-        return categories[7].innerHTML == BONUS_SCORE;
+    function recordRanking(recordScore) {
+        const recordNickname = document.getElementById("recordNickname").value;
+        fetch("/api/record/new", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                "nickname": recordNickname,
+                "score": recordScore,
+            }),
+        })
+            .then((response) => response.json())
+            .then((json) => {
+                loadRanking(json);
+                openRankingPopup();
+            })
     }
 
-    function isSatisfiedHomework(subTotal) {
-        return subTotal.innerHTML >= HOMEWORK_SCORE;
+    function openRankingPopup() {
+        openLayerPopup("rankingContent");
+        document.getElementById("recordContent").style.display = "none";
     }
 
+    function loadRanking(rankingId) {
+        fetch("/api/record", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            },
+        }).then((response) => response.json())
+            .then((json) => {
+                for (let ranking = 0; ranking < 10; ranking++) {
+                    let tmpTableRow = document.createElement("tr");
+
+                    let tmpRankingNum = document.createElement("td");
+                    tmpRankingNum.innerHTML = ranking + 1;
+                    tmpTableRow.appendChild(tmpRankingNum);
+
+                    let tmpRankingNickName = document.createElement("td");
+                    let tmpRankingScore = document.createElement("td");
+                    if (ranking < json.length) {
+                        if (json[ranking].id == rankingId) {
+                            tmpTableRow.style.color = "green";
+                        }
+                        tmpRankingNickName.innerHTML = json[ranking].nickname;
+                        tmpRankingScore.innerHTML = json[ranking].score;
+                    }
+                    tmpTableRow.appendChild(tmpRankingNickName);
+                    tmpTableRow.appendChild(tmpRankingScore);
+
+                    document.getElementById("rankingTableBody").appendChild(tmpTableRow);
+                }
+
+                let restartBtn = document.createElement("a");
+                restartBtn.innerHTML = "RESTART";
+                restartBtn.href = "/";
+                document.getElementById("rankingContent").appendChild(restartBtn);
+            });
+    }
+}
+
+function setTmpScoreBoard(scoreState) {
+    for(let index = 0; index < scoreState.categories.length; index++) {
+        tmpScoreBoard.set(scoreState.categories[index].genealogy, scoreState.categories[index].point);
+    }
+}
+
+function setGameState(chanceState, diceStates, scoreState, scoreColor) {
+    chance = chanceState;
+    for (let index = 0; index < 5; index++) {
+        setDiceImg(index, diceStates[index]);
+    }
+    fillScoreBoard(scoreState, scoreColor);
+    showChance();
+}
+
+function fillScoreBoard(score, color) {
+    for (let i = 0; i < score.categories.length; i++) {
+        let category = score.categories[i];
+        setScore(category, color);
+    }
+}
+
+function setScore(category, color) {
+    if (!category.acquired) return;
+    let element = document.getElementById(category.genealogy);
+    element.innerHTML = category.point;
+    element.style.color = color;
+    if (color == "black") {
+        element.onclick = null;
+    }
+}
+
+function setDiceImg(index, value) {
+    let diceImg = document.getElementById("diceImg" + (index + 1));
+    diceImg.src = "/images/diceImg" + value + ".png";
+}
+
+function showChance() {
+    document.getElementById("chanceText").innerHTML = "남은 횟수 : " + (3 - chance);
+}
+
+function toggleFixed(index) {
+    if (chance == 0) {
+        return;
+    }
+    let fixedCheckDiv = document.getElementById("fixedCheckDiv" + (index + 1));
+    if (fixedCheckDiv.style.display == "none") {
+        fixedCheckDiv.style.display = "block";
+    } else {
+        fixedCheckDiv.style.display = "none";
+    }
+
+    fixStates[index] = !fixStates[index];
+}
+
+function openLayerPopup(popupContent) {
+    document.getElementById("layerPopup").style.display = "flex";
+    document.getElementById(popupContent).style.display = "flex";
+}
+
+function closeLayerPopup() {
+    let popupContents = document.getElementsByClassName("layerPopupContent");
+    for (let element of popupContents) {
+        element.style.display = "none";
+    }
+    document.getElementById("layerPopup").style.display = "none";
 }
