@@ -49,6 +49,13 @@ table {
     background-color: inherit;
 }
 
+.imgBtn{
+    border: 0;
+    background-color: inherit;
+    max-width: 200px;
+    height: auto;
+}
+
 .diceBtn {
     position: relative;
     width: 80px;
@@ -163,6 +170,57 @@ table {
     left: 2%;
 }
 
+.imgLogo{
+    max-width: 10%;
+    height: auto;
+
+}
+/*룰 설명 부분*/
+.ruleBtn{
+    position: absolute;
+    max-width: 10%;
+    height: auto;
+    transition: all 0.2s linear;
+    -webkit-touch-callout: none;
+    user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -webkit-user-select: none;
+}
+.prev{
+    left: 10px;
+}
+.prev:hover{
+    transform: scale( 1.5 );
+}
+.next{
+    transform:rotate(180deg);
+    right: 10px;
+}
+.next:hover{
+    transform: scale(-1.5);
+}
+.top{
+    max-width: 50%;
+    height: auto;
+    top:20px;
+}
+.bottom{
+    bottom: 20px;
+}
+.Title{
+    position: absolute;
+    display:block;
+}
+.rule {
+    display: inline-block;
+}
+.text{
+    position: absolute;
+    text-align: center;
+    width: 75%;
+}
+/*룰 설명 부분*/
 #diceBtnContainer {
     display: flex;
     flex-wrap: wrap;

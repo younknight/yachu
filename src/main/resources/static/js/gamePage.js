@@ -24,6 +24,8 @@ function addBtnFunction() {
     document.getElementById("rollDicesBtn").onclick = () => rollDices();
     document.getElementById("gameRuleShowBtn").onclick = () => openLayerPopup('gameRuleContent');
     document.getElementById("popUpCloseBtn").onclick = () => closeLayerPopup();
+    document.getElementById("nextBtn").onclick = () => nextText();
+    document.getElementById("prevBtn").onclick = () => prevText();
 
     for (let i = 0; i < categories.length; i++) {
         if (i == 6 || i == 7 || i == 14) {
@@ -68,20 +70,43 @@ function loadGameState() {
         })
 }
 
+let rule = 0;
+let text=[];
+let ment=[];
 function loadTextFile() {
     fetch("/text/gameRule.txt")
         .then((res) => res.text())
         .then((data) => {
-            data = data.replace(/\r\n/ig, '<br>');
-            data = data.replace(/\r/ig, '<br>');
-            data = data.replace(/\n/ig, '<br>');
-            document.getElementById('gameRuleContent').innerHTML = data;
+            text=data.split('@');
+            showText();
         })
+    fetch("/text/ment.txt")
+        .then((res) => res.text())
+        .then((data) => {
+            ment=data.split('@');
+            console.log(ment);
+        })
+}
+
+function showText(){
+    document.getElementById('Rule').innerHTML = text[rule];
+    document.getElementById('RuleIndex').innerHTML = (rule + 1) + " / " + text.length;
+}
+function nextText(){
+    ++rule;
+    if(rule==text.length) rule=0;
+    showText();
+}
+function prevText(){
+    --rule;
+    if(rule==-1) rule=text.length-1;
+    showText();
 }
 
 function rollDices() {
     if (chance >= 3) {
-        alert("다 돌림");
+        openLayerPopup('chanceOut');
+        document.getElementById("ment").innerHTML = ment[Math.floor(Math.random() * ment.length)];
         return;
     }
 
