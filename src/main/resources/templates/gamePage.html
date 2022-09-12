@@ -2,46 +2,45 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
-
+    <title>YachuDice</title>
     <link rel="stylesheet" href="" th:href="@{/css/gamePage.css}"/>
 </head>
 <body>
 <aside id="scoreBoard">
-    <h2>Score Board</h2>
+    <h2 class="textCenter">Score Board</h2>
     <table>
         <tr>
-            <th>Categories</th>
+            <th class="textLeft">Categories</th>
             <th>Score</th>
         </tr>
         <tr class="tooltip">
             <td>ACES
-                <span class="tooltipText tooltip-left">1의 합</span></td>
+                <span class="tooltipText tooltip-left">1이 나온 주사위 눈의 총합.</span></td>
             <td class="category" id="ACES"></td>
         </tr>
         <tr class="tooltip">
             <td>DEUCES
-                <span class="tooltipText tooltip-left">2의 합</span></td>
+                <span class="tooltipText tooltip-left">2이 나온 주사위 눈의 총합.</span></td>
             <td class="category" id="DEUCES"></td>
         </tr>
         <tr class="tooltip">
             <td>THREES
-                <span class="tooltipText tooltip-left">3의 합</span></td>
+                <span class="tooltipText tooltip-left">3이 나온 주사위 눈의 총합.</span></td>
             <td class="category" id="THREES"></td>
         </tr>
         <tr class="tooltip">
             <td>FOURS
-                <span class="tooltipText tooltip-left">4의 합</span></td>
+                <span class="tooltipText tooltip-left">4이 나온 주사위 눈의 총합.</span></td>
             <td class="category" id="FOURS"></td>
         </tr>
         <tr class="tooltip">
             <td>FIVES
-                <span class="tooltipText tooltip-left">5의 합</span></td>
+                <span class="tooltipText tooltip-left">5이 나온 주사위 눈의 총합.</span></td>
             <td class="category" id="FIVES"></td>
         </tr>
         <tr class="tooltip">
             <td>SIXES
-                <span class="tooltipText tooltip-left">6의 합</span></td>
+                <span class="tooltipText tooltip-left">6이 나온 주사위 눈의 총합.</span></td>
             <td class="category" id="SIXES"></td>
         </tr>
         <tr>
@@ -50,37 +49,37 @@
         </tr>
         <tr class="tooltip">
             <td>BonusScore
-                <span class="tooltipText tooltip-left">"subtotal"이 63점 이상일 경우 +35점</span></td>
+                <span class="tooltipText tooltip-left">"subtotal"이 63점 이상일 경우, +35점.</span></td>
             <td class="category" id="BONUS"></td>
         </tr>
         <tr class="tooltip">
             <td>CHOICE
-                <span class="tooltipText tooltip-left">모든 주사위 눈금의 합</span></td>
+                <span class="tooltipText tooltip-left">주사위 눈 5개의 총합.</span></td>
             <td class="category" id="CHOICE"></td>
         </tr>
         <tr class="tooltip">
             <td>FOUR_OF_KIND
-                <span class="tooltipText tooltip-left">4개의 주사위 눈금이 같은 경우</span></td>
+                <span class="tooltipText tooltip-left">동일한 주사위 눈이 4개일 때,<br>주사위 눈 5개의 총합.</span></td>
             <td class="category" id="FOUR_OF_KIND"></td>
         </tr>
         <tr class="tooltip">
             <td>FULL_HOUSE
-                <span class="tooltipText tooltip-left">3개의 주사위 눈금과 2개의 주사위 눈금이<br> 동시에 같은 경우</span></td>
+                <span class="tooltipText tooltip-left">동일한 주사위 눈이 각각 3개, 2개일 때,<br>주사위 눈 5개의 총합.</span></td>
             <td class="category" id="FULL_HOUSE"></td>
         </tr>
         <tr class="tooltip">
             <td>SMALL_STRAIGHT
-                <span class="tooltipText tooltip-left">4개의 주사위가 연속된 숫자를 이루는 경우</span></td>
+                <span class="tooltipText tooltip-left">이어지는 주사위 눈이 4개 이상일 때, +15점.</span></td>
             <td class="category" id="SMALL_STRAIGHT"></td>
         </tr>
         <tr class="tooltip">
             <td>LARGE_STRAIGHT
-                <span class="tooltipText tooltip-left">5개의 주사위가 연속된 숫자를 이루는 경우</span></td>
+                <span class="tooltipText tooltip-left">이어지는 주사위 눈이 5개 이상일 때, +30점.</span></td>
             <td class="category" id="LARGE_STRAIGHT"></td>
         </tr>
         <tr class="tooltip">
             <td>YACHU
-                <span class="tooltipText tooltip-left">5개의 주사위가 모두 같은경우</span></td>
+                <span class="tooltipText tooltip-left">동일한 주사위 눈이 5개일 때, +50점.</span></td>
             <td class="category" id="YACHU"></td>
         </tr>
         <tr>
@@ -88,17 +87,24 @@
             <td class="category" id="TOTAL"></td>
         </tr>
     </table>
+
 </aside>
 <main>
-    <button class="textBtn" id="gameRuleShowBtn">
-        게임설명
+    <button class="imgBtn" id="gameRuleShowBtn">
+        <img src="/images/gameExplain.png"  alt="게임설명">
     </button>
     <p id="chanceText">남은 횟수 : 3</p>
     <section id="diceBtnContainer">
     </section>
-    <button id="rollDicesBtn">
-        굴리기
+    <button class="imgBtn" id="rollDicesBtn">
+        <img src="/images/reroll.png" alt="굴리기">
     </button>
+    <div class="check">
+        <div class="checkBox">
+            <input type="checkbox" id="anima" name="animationSet">
+            <label for="anima"><span>animation off</span></label>
+        </div>
+    </div>
 </main>
 <section id="layerPopup">
     <div id="layer">
@@ -106,7 +112,11 @@
             CLOSE
         </button>
         <article class="layerPopupContent" id="gameRuleContent">
-            gameRule
+            <img src="/images/yachuTitle.png" class="Title top">
+            <img src="/images/arrow.png" class="rule ruleBtn prev" id="prevBtn">
+            <h3 class="rule text" id="Rule">gameRule</h3>
+            <img src="/images/arrow.png" class="rule ruleBtn next" id="nextBtn">
+            <span class="Title bottom" id="RuleIndex">index</span>
         </article>
         <article class="layerPopupContent" id="recordContent">
             <h2>Game Over!</h2>
@@ -129,6 +139,10 @@
                 <tbody id="rankingTableBody">
                 </tbody>
             </table>
+        </article>
+        <article class="layerPopupContent"  id="chanceOut">
+            <img src="/images/chanceOut.png" class="imgLogo">
+            <h2 class="textCenter" id="ment">다 돌림</h2>
         </article>
     </div>
 </section>

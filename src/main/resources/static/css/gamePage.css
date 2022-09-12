@@ -9,7 +9,7 @@ body {
 }
 
 aside {
-    width: 20%;
+    width: 300px;
     height: 100%;
 }
 
@@ -39,15 +39,76 @@ a {
 
 table {
     width: 100%;
+    padding-left: 15px;
 }
+
 
 .category {
     cursor: pointer;
+    text-align: center;
 }
 
 .textBtn {
     border: 0;
     background-color: inherit;
+}
+
+.imgBtn {
+    border: 0;
+    background-color: inherit;
+    max-width: 200px;
+    height: auto;
+}
+
+.textCenter {
+    text-align: center;
+}
+.textLeft{
+    text-align: left;
+}
+
+.check {
+    position: relative;
+    margin-top: 10px;
+}
+
+.check .checkBox input[type="checkbox"] {
+    display: none;
+}
+
+.check .checkBox input[type="checkbox"] + label {
+    margin-left: 110px;
+    display: inline-block;
+    width: 17px;
+    height: 17px;
+    background: #ffffff;
+    cursor: pointer;
+    border: 3px solid orange;
+    border-radius: 3px;
+    float: right;
+}
+
+.check .checkBox:after {
+    display: block;
+    clear: both;
+    content: "";
+}
+
+.check .checkBox input[type="checkbox"]:checked + label {
+    border: 3px solid orange;
+    background: #ffc400 no-repeat center/10px 10px;
+    float: right;
+}
+
+.check .checkBox input[type="checkbox"] + label span {
+    position: absolute;
+    width: 105px;
+    right: 30px;
+    display: block;
+    font-weight: bold;
+    font-family: Arial;
+    font-style: italic;
+    color: lightsalmon;
 }
 
 .diceBtn {
@@ -63,7 +124,8 @@ table {
     right: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.3);
+    background: url(../images/lock.png) no-repeat, rgba(0, 0, 0, 0.3);
+    background-size: cover;
 }
 
 .layerPopupContent {
@@ -117,6 +179,107 @@ table {
     border-color: transparent black transparent transparent;
 }
 
+.tooltip {
+    position: relative;
+}
+
+.tooltip .tooltipText {
+    visibility: hidden;
+    width: 110%;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+
+    position: absolute;
+    z-index: 1;
+}
+
+.tooltip:hover .tooltipText {
+    visibility: visible;
+}
+
+.tooltip .tooltipText::after {
+    content: " ";
+    position: absolute;
+    border-style: solid;
+    border-width: 5px;
+}
+
+.tooltip .tooltip-left {
+    top: -5px;
+    left: 105%;
+}
+
+.tooltip .tooltip-left::after {
+    top: 50%;
+    right: 100%;
+    margin-top: -5px;
+    border-color: transparent black transparent transparent;
+}
+
+.imgLogo {
+    max-width: 10%;
+    height: auto;
+}
+
+/*룰 설명 부분*/
+.ruleBtn {
+    position: absolute;
+    max-width: 10%;
+    height: auto;
+    transition: all 0.2s linear;
+    -webkit-touch-callout: none;
+    user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -webkit-user-select: none;
+}
+
+.prev {
+    left: 10px;
+}
+
+.prev:hover {
+    transform: scale(1.5);
+}
+
+.next {
+    transform: rotate(180deg);
+    right: 10px;
+}
+
+.next:hover {
+    transform: scale(-1.5);
+}
+
+.top {
+    max-width: 50%;
+    height: auto;
+    top: 20px;
+}
+
+.bottom {
+    bottom: 20px;
+}
+
+.Title {
+    position: absolute;
+    display: block;
+}
+
+.rule {
+    display: inline-block;
+}
+
+.text {
+    position: absolute;
+    text-align: center;
+    width: 75%;
+}
+
+/*룰 설명 부분*/
 #scoreBoard {
     background-color: aquamarine;
 }
@@ -136,8 +299,8 @@ table {
 }
 
 #rollDicesBtn {
-    width: 80px;
-    height: 40px;
+    width: 200px;
+    height: auto;
 }
 
 #layerPopup {
@@ -161,7 +324,7 @@ table {
 
 #popUpCloseBtn {
     position: absolute;
-    top: 1%;
+    top: 5%;
     right: 5%;
     color: white;
 }
