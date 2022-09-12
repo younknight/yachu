@@ -24,6 +24,7 @@ function addBtnFunction() {
     document.getElementById("rollDicesBtn").onclick = () => rollDices();
     document.getElementById("gameRuleShowBtn").onclick = () => openLayerPopup('gameRuleContent');
     document.getElementById("popUpCloseBtn").onclick = () => closeLayerPopup();
+    document.getElementById("anima").onclick = () => settingAnima();
     document.getElementById("nextBtn").onclick = () => nextText();
     document.getElementById("prevBtn").onclick = () => prevText();
 
@@ -92,17 +93,30 @@ function showText(){
     document.getElementById('Rule').innerHTML = text[rule];
     document.getElementById('RuleIndex').innerHTML = (rule + 1) + " / " + text.length;
 }
+
 function nextText(){
     ++rule;
     if(rule==text.length) rule=0;
     showText();
 }
+
 function prevText(){
     --rule;
     if(rule==-1) rule=text.length-1;
     showText();
 }
+let time = 0;
+let maxCnt = 5;
+let delay = 150;
 
+function settingAnima(){
+    if(delay!=0) {
+        delay=0;
+    }
+    else {
+        delay=150;
+    }
+}
 function rollDices() {
     if (chance >= 3) {
         openLayerPopup('chanceOut');
@@ -110,7 +124,12 @@ function rollDices() {
         return;
     }
 
-    fetch("/api/" + id + "/roll", {
+    const target = document.getElementById('rollDicesBtn');
+    target.disabled = true;
+
+    clearInterval(time);
+    time = setInterval("throwDice()",delay);
+    setTimeout(() => fetch("/api/" + id + "/roll", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -127,9 +146,18 @@ function rollDices() {
             }
             setGameState(json.chance, diceStates, json.score, "gray");
             setTmpScoreBoard(json.score)
-        });
+            clearInterval(time);
+            target.disabled = false;
+        }), delay * maxCnt);
 }
-
+function throwDice() {
+    for (let value = 0; value < 5; value++) {
+        console.log(value + fixStates[value])
+        if(!fixStates[value]) {
+            setDiceImg(value, Math.floor(Math.random() * 6) + 1);
+        }
+    }
+}
 function gain(index) {
     if (chance == 0) {
         alert("주사위를 굴리십시오");

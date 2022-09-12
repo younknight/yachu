@@ -2,17 +2,15 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
-
+    <title>YachuDice</title>
     <link rel="stylesheet" href="" th:href="@{/css/gamePage.css}"/>
 </head>
 <body>
 <aside id="scoreBoard">
-    <h2>Score Board</h2>
-
+    <h2 class="textCenter">Score Board</h2>
     <table>
         <tr>
-            <th>Categories</th>
+            <th class="textLeft">Categories</th>
             <th>Score</th>
         </tr>
         <tr class="tooltip">
@@ -98,9 +96,15 @@
     <p id="chanceText">남은 횟수 : 3</p>
     <section id="diceBtnContainer">
     </section>
-    <button id="rollDicesBtn" class="imgBtn">
-        <img src="/images/reroll.png"  alt="굴리기">
+    <button class="imgBtn" id="rollDicesBtn">
+        <img src="/images/reroll.png" alt="굴리기">
     </button>
+    <div class="check">
+        <div class="checkBox">
+            <input type="checkbox" id="anima" name="animationSet">
+            <label for="anima"><span>animation off</span></label>
+        </div>
+    </div>
 </main>
 <section id="layerPopup">
     <div id="layer">
@@ -138,7 +142,7 @@
         </article>
         <article class="layerPopupContent"  id="chanceOut">
             <img src="/images/chanceOut.png" class="imgLogo">
-            <h2 id="ment">다 돌림.</h2>
+            <h2 class="textCenter" id="ment">다 돌림</h2>
         </article>
     </div>
 </section>
