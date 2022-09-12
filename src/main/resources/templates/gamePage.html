@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <link rel="stylesheet" href="" th:href="@{/css/gamePage.css}"/>
+</head>
+<body>
+<aside id="scoreBoard">
+    <h2>Score Board</h2>
+    <table>
+        <tr>
+            <th>Categories</th>
+            <th>Score</th>
+        </tr>
+        <tr class="tooltip">
+            <td>ACES
+                <span class="tooltipText tooltip-left">1의 합</span></td>
+            <td class="category" id="ACES"></td>
+        </tr>
+        <tr class="tooltip">
+            <td>DEUCES
+                <span class="tooltipText tooltip-left">2의 합</span></td>
+            <td class="category" id="DEUCES"></td>
+        </tr>
+        <tr class="tooltip">
+            <td>THREES
+                <span class="tooltipText tooltip-left">3의 합</span></td>
+            <td class="category" id="THREES"></td>
+        </tr>
+        <tr class="tooltip">
+            <td>FOURS
+                <span class="tooltipText tooltip-left">4의 합</span></td>
+            <td class="category" id="FOURS"></td>
+        </tr>
+        <tr class="tooltip">
+            <td>FIVES
+                <span class="tooltipText tooltip-left">5의 합</span></td>
+            <td class="category" id="FIVES"></td>
+        </tr>
+        <tr class="tooltip">
+            <td>SIXES
+                <span class="tooltipText tooltip-left">6의 합</span></td>
+            <td class="category" id="SIXES"></td>
+        </tr>
+        <tr>
+            <td>SubTotal</td>
+            <td class="category" id="SUBTOTAL"></td>
+        </tr>
+        <tr class="tooltip">
+            <td>BonusScore
+                <span class="tooltipText tooltip-left">"subtotal"이 63점 이상일 경우 +35점</span></td>
+            <td class="category" id="BONUS"></td>
+        </tr>
+        <tr class="tooltip">
+            <td>CHOICE
+                <span class="tooltipText tooltip-left">모든 주사위 눈금의 합</span></td>
+            <td class="category" id="CHOICE"></td>
+        </tr>
+        <tr class="tooltip">
+            <td>FOUR_OF_KIND
+                <span class="tooltipText tooltip-left">4개의 주사위 눈금이 같은 경우</span></td>
+            <td class="category" id="FOUR_OF_KIND"></td>
+        </tr>
+        <tr class="tooltip">
+            <td>FULL_HOUSE
+                <span class="tooltipText tooltip-left">3개의 주사위 눈금과 2개의 주사위 눈금이<br> 동시에 같은 경우</span></td>
+            <td class="category" id="FULL_HOUSE"></td>
+        </tr>
+        <tr class="tooltip">
+            <td>SMALL_STRAIGHT
+                <span class="tooltipText tooltip-left">4개의 주사위가 연속된 숫자를 이루는 경우</span></td>
+            <td class="category" id="SMALL_STRAIGHT"></td>
+        </tr>
+        <tr class="tooltip">
+            <td>LARGE_STRAIGHT
+                <span class="tooltipText tooltip-left">5개의 주사위가 연속된 숫자를 이루는 경우</span></td>
+            <td class="category" id="LARGE_STRAIGHT"></td>
+        </tr>
+        <tr class="tooltip">
+            <td>YACHU
+                <span class="tooltipText tooltip-left">5개의 주사위가 모두 같은경우</span></td>
+            <td class="category" id="YACHU"></td>
+        </tr>
+        <tr>
+            <td>Total</td>
+            <td class="category" id="TOTAL"></td>
+        </tr>
+    </table>
+</aside>
+<main>
+    <button class="textBtn" id="gameRuleShowBtn">
+        게임설명
+    </button>
+    <p id="chanceText">남은 횟수 : 3</p>
+    <section id="diceBtnContainer">
+    </section>
+    <button id="rollDicesBtn">
+        굴리기
+    </button>
+</main>
+<section id="layerPopup">
+    <div id="layer">
+        <button class="textBtn" id="popUpCloseBtn">
+            CLOSE
+        </button>
+        <article class="layerPopupContent" id="gameRuleContent">
+            gameRule
+        </article>
+        <article class="layerPopupContent" id="recordContent">
+            <h2>Game Over!</h2>
+            <input type="text" id="recordNickname" placeholder="닉네임을 입력해주세요 (20자 이하)" maxlength="20">
+            <p id="recordScore">Score : 200</p>
+            <button id="recordBtn">등록</button>
+        </article>
+        <article class="layerPopupContent" id="rankingContent">
+            <table id="rankingTable">
+                <thead>
+                <tr>
+                    <th colspan="3">Ranking</th>
+                </tr>
+                <tr>
+                    <th>순위</th>
+                    <th>닉네임</th>
+                    <th>점수</th>
+                </tr>
+                </thead>
+                <tbody id="rankingTableBody">
+                </tbody>
+            </table>
+        </article>
+    </div>
+</section>
+<script src="" th:src="@{/js/gamePage.js}"></script>
+</body>
+</html>
